@@ -1,14 +1,22 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "Node16",
+    "module": "commonjs",
     "outDir": "dist",
     "target": "ES2019",
     "lib": ["ES2019", "DOM"],
     "isolatedModules": false,
     "noEmit": false,
-    "esModuleInterop": true
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    "src/env/server.mjs",
+    "src/env/schema.js"
+  ],
+  "exclude": ["node_modules"]
 }
