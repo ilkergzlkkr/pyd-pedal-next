@@ -1,8 +1,12 @@
 import { createContext } from "./context";
 import { appRouter } from ".";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
+import axios from "axios";
 import ws from "ws";
 
+if (!global.fetch) {
+  (global as any).fetch = axios;
+}
 const wss = new ws.Server({
   port: 3001,
 });
