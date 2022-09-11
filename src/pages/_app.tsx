@@ -43,7 +43,7 @@ const getEndingLink = ({ url }: { url: string }) => {
 };
 
 export default withTRPC<AppRouter>({
-  config() {
+  config({ ctx }) {
     /**
      * If you want to use SSR, you need to use the server's full URL
      * @link https://trpc.io/docs/ssr

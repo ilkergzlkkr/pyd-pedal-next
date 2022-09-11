@@ -169,6 +169,47 @@ export const Content = () => {
   );
 };
 
+export const PedalContent = () => {
+  return (
+    <Layout>
+      <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-2xl px-6 text-center">
+          <h1 className="tracking-tight font-extrabold text-white mt-5 text-6xl">
+            <span className="block">Baking your Equalizer</span>
+            <span className="block text-indigo-400">have fun in discord</span>
+          </h1>
+          <div className="py-7"></div>
+          <div className="inline-flex items-center text-white bg-black rounded-full p-3 pr-3 text-base">
+            <span className="px-3 py-5 text-white text-xs font-semibold leading-5 uppercase tracking-wide hover:bg-indigo-500 rounded-full">
+              Waiting for server response
+            </span>
+            <span className="px-5 py-3 ml-4 text-sm hover:bg-blue-600 rounded-full tracking-wide">
+              Started
+            </span>
+            <span className="grid px-5 py-5 ml-4 text-sm group hover:bg-yellow-600 rounded-full tracking-wide">
+              In progress
+              <p className="hidden ml-4 text-sm group-hover:block">%100</p>
+            </span>
+            <span className="px-5 py-3 ml-4 text-sm hover:bg-green-600 rounded-full tracking-wide">
+              Done
+            </span>
+            <ChevronRightIcon
+              className="ml-2 w-5 h-5 text-gray-500"
+              aria-hidden="true"
+            />
+          </div>
+          <p className="text-gray-300 mt-5 text-xl">
+            Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui
+            Lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat
+            fugiat.
+          </p>
+        </div>
+        <div className="mx-auto max-w-2xl px-6" style={{ height: 220 }} />
+      </div>
+    </Layout>
+  );
+};
+
 export const Form = () => {
   return (
     <div className="mt-12">
