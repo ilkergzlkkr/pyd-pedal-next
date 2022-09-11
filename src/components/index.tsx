@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { ChevronRightIcon } from "@heroicons/react/solid";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 type HeaderProps = {
   navigation: { name: string; href: string; isActive?: Boolean }[];
@@ -9,6 +10,7 @@ type HeaderProps = {
 
 export const Header = (props: HeaderProps) => {
   const { navigation } = props;
+  const { data: session } = useSession();
   return (
     <Popover as="header" className="relative">
       <div className="bg-gray-900 pt-6 p-4">
@@ -44,12 +46,23 @@ export const Header = (props: HeaderProps) => {
             </div>
           </div>
           <div className="hidden">
-            <a
-              href="#"
-              className="text-base font-medium text-white hover:text-gray-300"
-            >
-              Log in
-            </a>
+            {session ? (
+              <a
+                href="#"
+                className="text-base font-medium text-white hover:text-gray-300"
+              >
+                Signed in as {session?.user?.id} <br />
+                <button onClick={() => signOut()}>Sign out</button>
+              </a>
+            ) : (
+              <a
+                href="#"
+                className="text-base font-medium text-white hover:text-gray-300"
+                onClick={() => signIn()}
+              >
+                Log in
+              </a>
+            )}
             <a
               href="#"
               className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700"
@@ -107,10 +120,22 @@ export const Header = (props: HeaderProps) => {
               </div>
               <div className="mt-6 px-5">
                 <p className="text-center text-base font-medium text-gray-500">
-                  Existing user?{" "}
-                  <a href="#" className="text-gray-900 hover:underline">
-                    Login
-                  </a>
+                  {session ? (
+                    <a href="#" className="text-gray-900 hover:underline">
+                      Logged in as {session?.user?.name}
+                    </a>
+                  ) : (
+                    <>
+                      Existing user?{" "}
+                      <a
+                        href="#"
+                        onClick={() => signIn()}
+                        className="text-gray-900 hover:underline"
+                      >
+                        Login
+                      </a>
+                    </>
+                  )}
                 </p>
               </div>
             </div>
