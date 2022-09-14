@@ -1,11 +1,18 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import DiscordProvider, {
+  type DiscordProfile,
+} from "next-auth/providers/discord";
 
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../server/db/client";
 // import { env } from "../../../env/server.mjs";
 // due to mjs import issues, im using process.env instead
+
+function isDiscord(profile: DiscordProfile | any): profile is DiscordProfile {
+  // idk typescript, but seems that there is no interface checking
+  return (<DiscordProfile>profile).id !== undefined;
+}
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
@@ -17,7 +24,17 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
+    redirect({ url, baseUrl }) {
+      return baseUrl + "/pypedal";
+    },
+    signIn({ account, user, profile, email, credentials }) {
+      if (account.provider === "discord" && isDiscord(profile)) {
+        user.id = profile.id; // not working
+      }
+      return true;
+    },
   },
+
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
   providers: [
