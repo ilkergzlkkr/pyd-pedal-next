@@ -1,10 +1,10 @@
+import type React from "react";
 import { Fragment, useState } from "react";
-import { Dialog, Transition, Listbox } from "@headlessui/react";
-import { BeakerIcon } from "@heroicons/react/solid";
-import { CheckIcon, CloudUploadIcon } from "@heroicons/react/solid";
+import { Dialog, Transition, Listbox, Disclosure } from "@headlessui/react";
+import { CheckIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { NewspaperIcon, XIcon } from "@heroicons/react/outline";
 import { ChevronDoubleRightIcon } from "@heroicons/react/outline";
-import { Content, Header, Layout } from "../components";
+import { Header, Layout } from "../components";
 import {
   boards,
   Board,
@@ -73,7 +73,7 @@ export const PedalContent = () => {
     "Remember, this is a closed-beta feature. There could be any bug or issue. Please report it to the developer.";
   return (
     <Layout>
-      <MyModal title="Closed-Beta" body={information} />
+      <BetaReminder title="Closed-Beta" body={information} />
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h1 className="tracking-tight font-extrabold text-white mt-5 text-5xl">
@@ -119,7 +119,7 @@ export const PedalContent = () => {
             )}
 
             {input.sent && (
-              <div className="flex container text-white bg-black rounded-full p-6 text-base">
+              <div className="flex container text-white bg-black rounded-full p-6 mb-16 text-base">
                 <span
                   className={`place-self-center p-6 text-white text-xs font-semibold leading-5 uppercase tracking-wide ${
                     !response && "bg-indigo-500"
@@ -174,6 +174,7 @@ export const PedalContent = () => {
             }`}
           >
             <a
+              rel="noopener noreferrer"
               href={response?.result || ""}
               target="_blank"
               className="flex justify-center p-2 text-indigo-300 transition-colors duration-150 rounded-lg focus:shadow-outline hover:bg-indigo-900 hover:text-white"
@@ -182,26 +183,25 @@ export const PedalContent = () => {
             </a>
             {/* copy url button */}
           </div>
-          <div className="text-gray-300 mt-5 text-xl">
+          <div className="text-gray-300 mt-5 mb-5 text-xl">
             <p className="flex mb-5">
               {getBoardName(board)}: {getBoardDescription(board)}
             </p>
             <p>{information}</p>
           </div>
         </div>
-        <div className="mx-auto max-w-2xl px-6" style={{ height: 220 }} />
+        <div className="h-64" />
+        <FAQs />
+        <div className="h-60" />
       </div>
     </Layout>
   );
 };
 
-export function MyListbox({
-  selected,
-  setSelected,
-}: {
+export const MyListbox: React.FC<{
   selected: Board;
   setSelected: React.Dispatch<React.SetStateAction<Board>>;
-}) {
+}> = ({ selected, setSelected }) => {
   return (
     <Listbox value={selected} onChange={setSelected}>
       <div className="flex container justify-center">
@@ -251,7 +251,7 @@ export function MyListbox({
       </div>
     </Listbox>
   );
-}
+};
 
 export const Announcement = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -270,7 +270,7 @@ export const Announcement = () => {
             <p className="ml-3 truncate font-medium text-white">
               <span className="md:hidden">We announced a new product!</span>
               <span className="hidden md:inline">
-                Big news! We're excited to announce a brand new product.
+                Big news! We{"'"}re excited to announce a brand new product.
               </span>
             </p>
           </div>
@@ -298,26 +298,13 @@ export const Announcement = () => {
   );
 };
 
-export function MyModal({
-  open = true,
-  title,
-  body,
-  ok = "Got it, thanks!",
-}: {
+export const BetaReminder: React.FC<{
   open?: boolean;
   title: string;
   body: string;
   ok?: string;
-}) {
+}> = ({ open = true, title, body, ok = "Got it, thanks!" }) => {
   const [isOpen, setIsOpen] = useState(open);
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openModal() {
-    setIsOpen(true);
-  }
 
   return (
     <>
@@ -332,7 +319,11 @@ export function MyModal({
       </div> */}
 
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setIsOpen(false)}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -371,7 +362,7 @@ export function MyModal({
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
+                      onClick={() => setIsOpen(false)}
                     >
                       {ok}
                     </button>
@@ -384,4 +375,75 @@ export function MyModal({
       </Transition>
     </>
   );
-}
+};
+
+export const FAQs = () => {
+  const friend = (via: string, url: string) => {
+    return (
+      <a
+        className="text-purple-900"
+        rel="noopener noreferrer"
+        target="_blank"
+        href={url}
+      >
+        {via}
+      </a>
+    );
+  };
+  const QnA = [
+    {
+      question: "What does the Equalizer do?",
+      answer:
+        "The Equalizer is a feature that allows you to adjust the volume of each individual speaker in your system. This is useful if you have a system with multiple speakers and you want to adjust the volume of each speaker to get the best sound quality.",
+    },
+    {
+      question: "Why is there a Equalizer feature in this website?",
+      answer: "Because I can.",
+    },
+    {
+      question: "How this become a thing?",
+      answer: (
+        <>
+          Me and my friends{" "}
+          {friend("@hamittoysal", "https://instagram.com/hamittoysal")} and{" "}
+          {friend("@iguessinan", "https://instagram.com/iguessinan")} were got
+          bored and we decided to make this (Equalizer app) for pushing{" "}
+          {"'Slowed-Reverb'"} songs to Youtube yolo.
+        </>
+      ),
+    },
+    {
+      question: "What is the future of this project?",
+      answer:
+        "I don't know, I'm just a student who wants to learn more about web development and this is my first project. The main thing is that, the website is built for quickly generate a 'Slowed-Reverb' audio and upload it to Youtube via clicking buttons easily.",
+    },
+  ];
+  return (
+    <div className="flex w-full px-4 pt-16">
+      <h1 className="tracking-tight font-extrabold text-white mt-5 text-5xl">
+        Questions <span className="text-indigo-400">and</span> Answers
+      </h1>
+      <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
+        {QnA.map((qna, idx) => (
+          <Disclosure key={idx} as="div" className={`${idx > 0 ? "mt-2" : ""}`}>
+            {({ open }) => (
+              <>
+                <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-purple-900 bg-purple-100 rounded-lg hover:bg-gray-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                  <span>{qna.question}</span>
+                  <ChevronUpIcon
+                    className={`${
+                      open ? "transform rotate-180" : ""
+                    } w-5 h-5 text-gray-500`}
+                  />
+                </Disclosure.Button>
+                <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                  {qna.answer}
+                </Disclosure.Panel>
+              </>
+            )}
+          </Disclosure>
+        ))}
+      </div>
+    </div>
+  );
+};
