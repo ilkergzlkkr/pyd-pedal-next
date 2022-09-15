@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import DiscordProvider, {
   type DiscordProfile,
@@ -9,7 +10,9 @@ import { prisma } from "../../../server/db/client";
 // import { env } from "../../../env/server.mjs";
 // due to mjs import issues, im using process.env instead
 
-function isDiscord(profile: DiscordProfile | any): profile is DiscordProfile {
+function isDiscord(
+  profile: DiscordProfile | unknown
+): profile is DiscordProfile {
   // idk typescript, but seems that there is no interface checking
   return (<DiscordProfile>profile).id !== undefined;
 }

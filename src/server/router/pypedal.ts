@@ -99,7 +99,7 @@ export const pypedalRouter = createRouter()
 
       const id = url.match(youtubeVideoRegex)?.[1];
       assert(id, "Invalid youtube video url");
-      const [boardName, board_type] = board_name;
+      // const [boardName, board_type] = board_name;
 
       // const cache = boardLastStatusCache.get({
       //   id,
@@ -138,7 +138,7 @@ export const pypedalRouter = createRouter()
 
         const id = url.match(youtubeVideoRegex)?.[1];
         assert(id, "Invalid youtube video url");
-        const [boardName, board_type] = board_name;
+        // const [boardName, board_type] = board_name;
         const cache = null;
 
         // const cache = boardLastStatusCache.get({

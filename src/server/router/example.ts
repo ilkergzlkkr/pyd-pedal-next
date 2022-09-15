@@ -41,7 +41,7 @@ export const exampleRouter = createRouter()
     },
   })
   .subscription("subscribeToAll", {
-    async resolve({ ctx }) {
+    async resolve() {
       return new Subscription<Example>((emit) => {
         const onAdd = (data: Example) => {
           // emit data to client

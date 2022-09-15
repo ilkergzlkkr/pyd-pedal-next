@@ -88,7 +88,7 @@ export const boards = [
 export const getBoardDescription = (board: Board | BoardName) => {
   let name: BoardName;
   if (board instanceof Array) {
-    const [boardName, _] = board;
+    const [boardName] = board;
     name = boardName;
   } else {
     name = board;
