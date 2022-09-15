@@ -12,6 +12,8 @@ export const serverSchema = z.object({
   NEXTAUTH_URL: z.string().url(),
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
+  PEDAL_WEBSOCKET_URL: z.string().url().min(1),
+  PEDAL_WEBSOCKET_SECRET: z.string(),
 });
 
 /**

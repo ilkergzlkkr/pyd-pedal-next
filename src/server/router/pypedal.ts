@@ -1,6 +1,5 @@
 import { createRouter } from "./context";
 import { z } from "zod";
-import { Example } from "@prisma/client";
 
 import { EventEmitter } from "events";
 import { Subscription, TRPCError } from "@trpc/server";
@@ -9,23 +8,19 @@ import { WebSocket } from "ws";
 
 import {
   boardValidator,
-  RequiredIdentifier,
-  Board,
   StatusResponse,
-  statusResponseValidator,
   youtubeVideoRegex,
   videoUrlValidator,
   serverResponseValidator,
   ServerRequest,
-  BoardName,
 } from "../../utils/pypedal";
 import assert from "assert";
 
 // create a global event emitter (could be replaced by redis, etc)
 const ee = new EventEmitter();
-const wss = new WebSocket("ws://localhost:8000/ws", {
+const wss = new WebSocket(process.env.PEDAL_WEBSOCKET_URL || "/ws", {
   headers: {
-    Authorization: `eevnxx-closed-beta`,
+    Authorization: process.env.PEDAL_WEBSOCKET_SECRET,
   },
 });
 const wsStatus = new Map<number, string>([
