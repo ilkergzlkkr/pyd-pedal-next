@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { env } from "./src/env/server.mjs";
 
 /**
@@ -19,5 +20,8 @@ export default defineNextConfig({
   i18n: {
     locales: ["en"],
     defaultLocale: "en",
+  },
+  images: {
+    domains: ["assets.vercel.com"],
   },
 });

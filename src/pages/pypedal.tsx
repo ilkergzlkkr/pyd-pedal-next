@@ -1,10 +1,10 @@
 import type React from "react";
+import type { NextPage } from "next";
 import { Fragment, useState } from "react";
 import { Dialog, Transition, Listbox, Disclosure } from "@headlessui/react";
 import { CheckIcon, ChevronUpIcon } from "@heroicons/react/solid";
-import { NewspaperIcon, XIcon } from "@heroicons/react/outline";
 import { ChevronDoubleRightIcon } from "@heroicons/react/outline";
-import { Header, Layout } from "../components";
+import { Layout } from "../components";
 import {
   boards,
   Board,
@@ -14,25 +14,7 @@ import {
 } from "../utils/pypedal";
 import { trpc } from "../utils/trpc";
 
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Equalizer", href: "/" },
-];
-
-export default function Page() {
-  return (
-    <>
-      <Announcement />
-      <div className="relative overflow-hidden">
-        <Header navigation={navigation} />
-
-        <PedalContent />
-      </div>
-    </>
-  );
-}
-
-export const PedalContent = () => {
+const PedalContent: NextPage = () => {
   const [input, setInput] = useState<{
     query: string;
     sent: boolean;
@@ -74,7 +56,7 @@ export const PedalContent = () => {
   return (
     <Layout>
       <BetaReminder title="Closed-Beta" body={information} />
-      <div className="mx-auto max-w-7xl">
+      <div className="">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h1 className="tracking-tight font-extrabold text-white mt-5 text-5xl">
             <span className="block">
@@ -100,7 +82,7 @@ export const PedalContent = () => {
                     }
                   ></input>
                   <div className="">
-                    <MyListbox selected={board} setSelected={setBoard} />
+                    <SelectBoard selected={board} setSelected={setBoard} />
                   </div>
                   <button
                     className={`m-2 mt-4 px-5 py-3 text-6xl text-indigo-300 transition-colors duration-150 rounded-lg focus:shadow-outline ${
@@ -198,7 +180,7 @@ export const PedalContent = () => {
   );
 };
 
-export const MyListbox: React.FC<{
+export const SelectBoard: React.FC<{
   selected: Board;
   setSelected: React.Dispatch<React.SetStateAction<Board>>;
 }> = ({ selected, setSelected }) => {
@@ -250,51 +232,6 @@ export const MyListbox: React.FC<{
         </Transition>
       </div>
     </Listbox>
-  );
-};
-
-export const Announcement = () => {
-  const [isOpen, setIsOpen] = useState(true);
-  if (!isOpen) return null;
-  return (
-    <div className="bg-indigo-600">
-      <div className="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center justify-between">
-          <div className="flex w-0 flex-1 items-center">
-            <span className="flex rounded-lg bg-indigo-800 p-2">
-              <NewspaperIcon
-                className="h-6 w-6 text-white"
-                aria-hidden="true"
-              />
-            </span>
-            <p className="ml-3 truncate font-medium text-white">
-              <span className="md:hidden">We announced a new product!</span>
-              <span className="hidden md:inline">
-                Big news! We{"'"}re excited to announce a brand new product.
-              </span>
-            </p>
-          </div>
-          <div className="order-3 mt-2 w-full flex-shrink-0 sm:order-2 sm:mt-0 sm:w-auto">
-            <a
-              onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-indigo-600 shadow-sm hover:bg-indigo-50"
-            >
-              Learn more
-            </a>
-          </div>
-          <div className="order-2 flex-shrink-0 sm:order-3 sm:ml-3">
-            <button
-              type="button"
-              className="-mr-1 flex rounded-md p-2 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="sr-only">Dismiss</span>
-              <XIcon className="h-6 w-6 text-white" aria-hidden="true" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 };
 
@@ -447,3 +384,5 @@ export const FAQs = () => {
     </div>
   );
 };
+
+export default PedalContent;
