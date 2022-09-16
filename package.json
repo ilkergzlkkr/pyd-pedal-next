@@ -7,8 +7,7 @@
     "dev:next": "next dev",
     "dev": "run-p dev:*",
     "build": "next build",
-    "start:wss": "ts-node --files --project tsconfig.server.json src/server/router/wssProdServer.ts",
-    "start:next": "next start",
+    "start:wss": "node dist/src/server/router/wssProdServer.js",
     "start": "run-p start:*",
     "lint": "next lint",
     "postinstall": "prisma generate"
@@ -32,6 +31,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-query": "^3.39.2",
+    "sharp": "^0.31.0",
     "superjson": "^1.9.1",
     "three": "^0.144.0",
     "ws": "^8.8.1",

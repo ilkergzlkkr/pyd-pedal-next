@@ -35,7 +35,8 @@ const getEndingLink = ({ url }: { url: string }) => {
     url:
       process.env.NODE_ENV === "development"
         ? `ws://localhost:3001`
-        : `wss://localhost:3000`,
+        : process.env.NEXT_PUBLIC_WS_URL || `ws://localhost:3000`,
+    // since we use ssr: false
   });
   return wsLink<AppRouter>({
     client,
