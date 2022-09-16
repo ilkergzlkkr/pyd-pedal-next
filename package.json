@@ -7,7 +7,7 @@
     "dev:next": "next dev",
     "dev": "run-p dev:*",
     "build": "next build",
-    "start:wss": "node dist/src/server/router/wssProdServer.js",
+    "start:wss": "ts-node --files --project tsconfig.server.json src/server/router/wssProdServer.ts",
     "start": "run-p start:*",
     "lint": "next lint",
     "postinstall": "prisma generate"
