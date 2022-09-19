@@ -125,9 +125,20 @@ export const pypedalRouter = createRouter()
       url: videoUrlValidator,
       board_name: boardValidator,
     }),
-    async resolve({ ctx, input: { url, board_name } }) {
-      return new Subscription<StatusResponse>((emit) => {
-        if (!ctx.session || !ctx.session.user)
+    resolve({ ctx, input: { url, board_name } }) {
+      return new Subscription<StatusResponse>(async (emit) => {
+        if (
+          !ctx.session ||
+          !ctx.session.user ||
+          !(await ctx.prisma.userGuild.findUnique({
+            where: {
+              id_userId: {
+                id: "223090625224900608",
+                userId: ctx.session.user.id,
+              },
+            },
+          }))
+        )
           throw new TRPCError({ code: "UNAUTHORIZED" });
         if (wss.readyState !== WebSocket.OPEN) {
           throw new TRPCError({

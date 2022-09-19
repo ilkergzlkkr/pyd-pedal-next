@@ -46,13 +46,14 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String      @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?     @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    guilds        UserGuild[]
 }
 
 model VerificationToken {
@@ -61,4 +62,17 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model UserGuild {
+    id          String
+    name        String
+    icon        String?
+    owner       Boolean
+    permissions BigInt
+
+    User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String
+
+    @@unique([id, userId])
 }

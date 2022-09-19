@@ -7,6 +7,7 @@ import DiscordProvider, {
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../server/db/client";
+import { setGuilds } from "../../../utils/discord";
 // import { env } from "../../../env/server.mjs";
 // due to mjs import issues, im using process.env instead
 
@@ -14,7 +15,7 @@ function isDiscord(
   profile: DiscordProfile | unknown
 ): profile is DiscordProfile {
   // idk typescript, but seems that there is no interface checking
-  return (<DiscordProfile>profile).id !== undefined;
+  return (<DiscordProfile>profile).accent_color !== undefined;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -23,18 +24,22 @@ export const authOptions: NextAuthOptions = {
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
-        // session.user.isAdmin = user.id === "223071656510357504";
       }
       return session;
     },
     redirect({ url, baseUrl }) {
       return baseUrl + "/pypedal";
     },
-    signIn({ account, user, profile, email, credentials }) {
-      if (account.provider === "discord" && isDiscord(profile)) {
-        user.id = profile.id; // not working
+
+    async signIn({ account, user }) {
+      if (!user.id) return false;
+      try {
+        setGuilds(user.id, account);
+        return true;
+      } catch (e) {
+        console.error(e);
+        return false;
       }
-      return true;
     },
   },
 
@@ -44,8 +49,11 @@ export const authOptions: NextAuthOptions = {
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID || "",
       clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
-      authorization:
-        "https://discord.com/api/oauth2/authorize?scope=identify+guilds",
+      authorization: {
+        params: {
+          scope: "identify guilds",
+        },
+      },
     }),
     // ...add more providers here
   ],

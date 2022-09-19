@@ -66,7 +66,7 @@ export const Header: React.FC<{
               <a
                 href="#"
                 className="text-base font-medium text-white hover:text-gray-300"
-                onClick={() => signIn()}
+                onClick={() => signIn("discord")}
               >
                 Log in
               </a>
@@ -130,7 +130,7 @@ export const Header: React.FC<{
                     <>
                       Existing user?{" "}
                       <a
-                        onClick={() => signIn()}
+                        onClick={() => signIn("discord")}
                         className="text-gray-900 hover:underline"
                       >
                         Login
