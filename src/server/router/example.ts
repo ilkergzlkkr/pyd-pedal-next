@@ -1,9 +1,7 @@
 import { createRouter } from "./context";
 import { z } from "zod";
-import { Example } from "@prisma/client";
 
 import { EventEmitter } from "events";
-import { Subscription } from "@trpc/server";
 // create a global event emitter (could be replaced by redis, etc)
 const ee = new EventEmitter();
 
@@ -38,21 +36,5 @@ export const exampleRouter = createRouter()
 
       ee.emit("example.created", result);
       return result;
-    },
-  })
-  .subscription("subscribeToAll", {
-    async resolve() {
-      return new Subscription<Example>((emit) => {
-        const onAdd = (data: Example) => {
-          // emit data to client
-          emit.data(data);
-        };
-        // trigger `onAdd()` when `add` is triggered in our event emitter
-        ee.on("example.created", onAdd);
-        // unsubscribe function when client disconnects or stops subscribing
-        return () => {
-          ee.off("example.created", onAdd);
-        };
-      });
     },
   });

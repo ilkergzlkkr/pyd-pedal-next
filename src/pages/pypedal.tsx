@@ -23,17 +23,14 @@ const PedalContent: NextPage = () => {
   const [board, setBoard] = useState<Board>(boards[0]);
   const [response, setResponse] = useState<StatusResponse>();
 
-  trpc.useSubscription(
-    [
-      "pypedal.status",
-      {
-        url: input.query,
-        board_name: board,
-      },
-    ],
+  trpc.proxy.pypedal.status.useSubscription(
+    {
+      url: input.query,
+      board_name: board,
+    },
     {
       enabled: input.sent,
-      onNext(response) {
+      onData(response) {
         console.log("SERVER RESPONSE", response, "input", input);
         setResponse(response);
       },
