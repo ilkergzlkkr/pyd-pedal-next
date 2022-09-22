@@ -8,6 +8,7 @@ import { getServerAuthSession } from "../../server/common/get-server-auth-sessio
 import { prisma } from "../db/client";
 import { getSession } from "next-auth/react";
 import { initTRPC } from "@trpc/server";
+import { ZodError } from "zod";
 import superjson from "superjson";
 import ws from "ws";
 
@@ -56,11 +57,15 @@ export type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
 export const t = initTRPC.context<Context>().create({
   transformer: superjson,
-  errorFormatter({ shape }) {
+  errorFormatter({ shape, error }) {
     return {
       ...shape,
       data: {
         ...shape.data,
+        zodError:
+          error.code === "BAD_REQUEST" && error.cause instanceof ZodError
+            ? error.cause.flatten()
+            : null,
       },
     };
   },

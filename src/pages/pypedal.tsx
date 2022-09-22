@@ -15,12 +15,26 @@ import {
 import { trpc } from "../utils/trpc";
 
 const PedalContent: NextPage = () => {
-  const [input, setInput] = useState<{
-    query: string;
-    sent: boolean;
-  }>({ query: "", sent: false });
+  const information =
+    "Remember, this is a closed-beta feature. There could be any bug or issue. Please report it to the developer.";
 
+  // user input
+  const [input, setInput] = useState({ query: "", sent: false });
   const [board, setBoard] = useState<Board>(boards[0]);
+
+  // notification
+  const [open, setOpen] = useState(true);
+  const [notification, setNotificationMeta] = useState({
+    title: "Closed-Beta",
+    body: information,
+  });
+
+  const setNotification = (n: typeof notification) => {
+    setNotificationMeta(n);
+    setOpen(true);
+  };
+
+  // response
   const [response, setResponse] = useState<StatusResponse>();
 
   trpc.proxy.pypedal.status.useSubscription(
@@ -35,24 +49,32 @@ const PedalContent: NextPage = () => {
         setResponse(response);
       },
       onError({ message, data }) {
+        console.log(message);
+        setInput({ query: "", sent: false });
+
+        if (data) {
+          setNotification({
+            title: "Error",
+            body: message,
+          });
+        }
+
+        // special case for invalid board
         if (data?.code === "BAD_REQUEST") {
-          if (message.includes("regex")) {
-            console.log("BAD URL");
-            setInput({ query: "", sent: false });
+          if (data.zodError?.fieldErrors["url"]) {
+            setNotification({
+              title: "Invalid URL",
+              body: "Please enter a valid URL.",
+            });
           }
-        } else if (data?.code === "PRECONDITION_FAILED") {
-          console.log("NOT CONNECTED TO SERVER");
-          setInput({ query: "", sent: false });
         }
       },
     }
   );
 
-  const information =
-    "Remember, this is a closed-beta feature. There could be any bug or issue. Please report it to the developer.";
   return (
     <Layout>
-      <BetaReminder title="Closed-Beta" body={information} />
+      <BetaReminder open={open} setOpen={setOpen} {...notification} />
       <div className="">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h1 className="tracking-tight font-extrabold text-white mt-5 text-5xl">
@@ -233,13 +255,12 @@ export const SelectBoard: React.FC<{
 };
 
 export const BetaReminder: React.FC<{
-  open?: boolean;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   body: string;
   ok?: string;
-}> = ({ open = true, title, body, ok = "Got it, thanks!" }) => {
-  const [isOpen, setIsOpen] = useState(open);
-
+}> = ({ open, setOpen, title, body, ok = "Got it, thanks!" }) => {
   return (
     <>
       {/* <div className="fixed inset-0 flex items-center justify-center">
@@ -252,11 +273,11 @@ export const BetaReminder: React.FC<{
         </button>
       </div> */}
 
-      <Transition appear show={isOpen} as={Fragment}>
+      <Transition appear show={open} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-10"
-          onClose={() => setIsOpen(false)}
+          onClose={() => setOpen(false)}
         >
           <Transition.Child
             as={Fragment}
@@ -296,7 +317,7 @@ export const BetaReminder: React.FC<{
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => setOpen(false)}
                     >
                       {ok}
                     </button>

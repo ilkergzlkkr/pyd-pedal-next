@@ -58,6 +58,7 @@ wss.onmessage = (event) => {
 // const boardLastStatusCache = ...;
 
 const onServerStatusResponse = (response: StatusResponse) => {
+  if (DEBUG) console.log("onServerStatusResponse <<", response);
   // update cache
   // ...
   // emit event
@@ -65,7 +66,7 @@ const onServerStatusResponse = (response: StatusResponse) => {
 };
 
 const sendServerRequest = (request: ServerRequest) => {
-  if (DEBUG) console.log("sendServerRequest", request);
+  if (DEBUG) console.log("sendServerRequest >>", request);
   wss.send(JSON.stringify(request));
 };
 
@@ -73,7 +74,7 @@ const panicAwareProcedure = authorizedKedyProcedure.use(({ ctx, next }) => {
   if (wss.readyState !== WebSocket.OPEN) {
     throw new TRPCError({
       code: "PRECONDITION_FAILED",
-      message: "Websocket is not open",
+      message: "Server is not ready",
     });
   }
   return next({ ctx });
@@ -107,12 +108,12 @@ export const pypedalRouter = t.router({
         }
 
         ee.on("pedal.status", (payload: StatusResponse) => {
-          if (!(payload.url === id && payload.board_name === board_name))
+          if (!(payload.url === id && payload.board_name.toString() === board_name.toString()))
             return;
           // should be sync with cache
           if (DEBUG) console.log("pedal.status", payload);
           emit.next(payload);
-          if (payload.state === "DONE") emit.complete();
+          // if (payload.state === "DONE") emit.complete();
         });
         return () => {
           ee.off("pedal.status", emit.next);
