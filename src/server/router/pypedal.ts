@@ -1,10 +1,12 @@
+import assert from "assert";
 import { z } from "zod";
+import { t } from "./context";
 
 import { EventEmitter } from "events";
 import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
-
 import { WebSocket } from "ws";
+import { authorizedKedyProcedure } from "./procedures";
 
 import {
   boardValidator,
@@ -14,8 +16,6 @@ import {
   serverResponseValidator,
   ServerRequest,
 } from "../../utils/pypedal";
-import assert from "assert";
-import { authorizedKedyProcedure, t } from ".";
 
 const DEBUG = process.env.NODE_ENV === "development";
 

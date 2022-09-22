@@ -1,40 +1,20 @@
-import { createRouter } from "./context";
 import { z } from "zod";
+import { t } from "./context";
 
-import { EventEmitter } from "events";
-// create a global event emitter (could be replaced by redis, etc)
-const ee = new EventEmitter();
-
-export const exampleRouter = createRouter()
-  .query("hello", {
-    input: z
-      .object({
-        text: z.string().nullish(),
-      })
-      .nullish(),
-    resolve({ input }) {
-      return {
-        greeting: `Hello ${input?.text ?? "world"}`,
-      };
-    },
-  })
-  .query("getAll", {
-    async resolve({ ctx }) {
-      return await ctx.prisma.example.findMany();
-    },
-  })
-  .mutation("create", {
-    input: z.object({
-      id: z.string().cuid(),
+export const exampleRouter = t.router({
+  hello: t.procedure
+    .input(z.object({ text: z.string().nullish() }))
+    .query(({ input }) => {
+      return `Hello ${input.text ?? "world"}`;
     }),
-    async resolve({ ctx, input: { id } }) {
-      const result = await ctx.prisma.example.create({
-        data: {
-          id,
-        },
+  getAll: t.procedure.query(({ ctx }) => {
+    return ctx.prisma.user.findMany();
+  }),
+  create: t.procedure
+    .input(z.object({ id: z.string().cuid() }))
+    .mutation(({ ctx, input: { id } }) => {
+      return ctx.prisma.user.create({
+        data: { id },
       });
-
-      ee.emit("example.created", result);
-      return result;
-    },
-  });
+    }),
+});
