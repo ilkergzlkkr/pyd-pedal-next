@@ -5,6 +5,7 @@ import { ChevronRightIcon } from "@heroicons/react/solid";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 import { Announcement } from "./modals";
+import { Toast } from "./toast";
 import Link from "next/link";
 import Head from "next/head";
 
@@ -233,6 +234,7 @@ export const Layout: React.FC<{ children: JSX.Element | JSX.Element[] }> = ({
       </Head>
       <Announcement />
       <Header navigation={navigation} />
+      <Toast />
       <main>
         <div className="bg-gray-900 pt-16">{children}</div>
       </main>

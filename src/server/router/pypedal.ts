@@ -108,7 +108,12 @@ export const pypedalRouter = t.router({
         }
 
         ee.on("pedal.status", (payload: StatusResponse) => {
-          if (!(payload.url === id && payload.board_name.toString() === board_name.toString()))
+          if (
+            !(
+              payload.url === id &&
+              payload.board_name.toString() === board_name.toString()
+            )
+          )
             return;
           // should be sync with cache
           if (DEBUG) console.log("pedal.status", payload);

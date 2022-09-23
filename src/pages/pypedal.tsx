@@ -1,7 +1,7 @@
 import type React from "react";
 import type { NextPage } from "next";
-import { Fragment, useState } from "react";
-import { Dialog, Transition, Listbox, Disclosure } from "@headlessui/react";
+import { Fragment, useState, useEffect } from "react";
+import { Transition, Listbox, Disclosure } from "@headlessui/react";
 import { CheckIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { ChevronDoubleRightIcon } from "@heroicons/react/outline";
 import { Layout } from "../components";
@@ -13,26 +13,21 @@ import {
   StatusResponse,
 } from "../utils/pypedal";
 import { trpc } from "../utils/trpc";
+import { useToastStore } from "../components/toast";
 
 const PedalContent: NextPage = () => {
   const information =
     "Remember, this is a closed-beta feature. There could be any bug or issue. Please report it to the developer.";
 
+  const { newToast } = useToastStore();
+  // show user the beta information once
+  useEffect(() => {
+    newToast({ title: "Closed-Beta", body: information });
+  }, [newToast]);
+
   // user input
   const [input, setInput] = useState({ query: "", sent: false });
   const [board, setBoard] = useState<Board>(boards[0]);
-
-  // notification
-  const [open, setOpen] = useState(true);
-  const [notification, setNotificationMeta] = useState({
-    title: "Closed-Beta",
-    body: information,
-  });
-
-  const setNotification = (n: typeof notification) => {
-    setNotificationMeta(n);
-    setOpen(true);
-  };
 
   // response
   const [response, setResponse] = useState<StatusResponse>();
@@ -53,18 +48,16 @@ const PedalContent: NextPage = () => {
         setInput({ query: "", sent: false });
 
         if (data) {
-          setNotification({
-            title: "Error",
-            body: message,
-          });
+          newToast({ title: "Error", body: message, type: "error" });
         }
 
         // special case for invalid board
         if (data?.code === "BAD_REQUEST") {
           if (data.zodError?.fieldErrors["url"]) {
-            setNotification({
+            newToast({
               title: "Invalid URL",
               body: "Please enter a valid URL.",
+              type: "error",
             });
           }
         }
@@ -74,7 +67,6 @@ const PedalContent: NextPage = () => {
 
   return (
     <Layout>
-      <BetaReminder open={open} setOpen={setOpen} {...notification} />
       <div className="">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h1 className="tracking-tight font-extrabold text-white mt-5 text-5xl">
@@ -251,84 +243,6 @@ export const SelectBoard: React.FC<{
         </Transition>
       </div>
     </Listbox>
-  );
-};
-
-export const BetaReminder: React.FC<{
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  title: string;
-  body: string;
-  ok?: string;
-}> = ({ open, setOpen, title, body, ok = "Got it, thanks!" }) => {
-  return (
-    <>
-      {/* <div className="fixed inset-0 flex items-center justify-center">
-        <button
-          type="button"
-          onClick={openModal}
-          className="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-        >
-          Open dialog
-        </button>
-      </div> */}
-
-      <Transition appear show={open} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-10"
-          onClose={() => setOpen(false)}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  >
-                    {title}
-                  </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">{body}</p>
-                  </div>
-
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={() => setOpen(false)}
-                    >
-                      {ok}
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
-    </>
   );
 };
 
