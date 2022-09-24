@@ -21,7 +21,11 @@ const DEBUG = process.env.NODE_ENV === "development";
 
 // create a global event emitter (could be replaced by redis, etc)
 const ee = new EventEmitter();
-const wss = createNewWebSocket(ee);
+let wss: WebSocket;
+const setWebsocket = (newWss: WebSocket) => {
+  wss = newWss;
+};
+wss = createNewWebSocket(ee, setWebsocket);
 
 // mapping of [id][board_name][board_type] -> status
 // const boardLastStatusCache = ...;

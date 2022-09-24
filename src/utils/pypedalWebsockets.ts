@@ -3,8 +3,11 @@ import { onServerStatusResponse } from "../server/router/pypedal";
 import { serverResponseValidator } from "./pypedal";
 import { WebSocket } from "ws";
 
-export const createNewWebSocket = (ee: EventEmitter) => {
-  let wss = new WebSocket(process.env.PEDAL_WEBSOCKET_URL || "/ws", {
+export const createNewWebSocket = (
+  ee: EventEmitter,
+  setWebsocket: CallableFunction
+) => {
+  const wss = new WebSocket(process.env.PEDAL_WEBSOCKET_URL || "/ws", {
     headers: {
       Authorization: process.env.PEDAL_WEBSOCKET_SECRET || "",
     },
@@ -40,7 +43,7 @@ export const createNewWebSocket = (ee: EventEmitter) => {
 
   wss.onclose = async (_event) => {
     await new Promise((resolve) => setTimeout(resolve, 10000));
-    wss = createNewWebSocket(ee);
+    setWebsocket(createNewWebSocket(ee, setWebsocket));
   };
 
   return wss;
