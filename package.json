@@ -25,6 +25,7 @@
     "@trpc/next": "^10.0.0-proxy-beta.3",
     "@trpc/react": "^10.0.0-proxy-beta.3",
     "@trpc/server": "^10.0.0-proxy-beta.3",
+    "audiobuffer-to-wav": "^1.0.0",
     "cuid": "^2.1.8",
     "next": "^12.3.1",
     "next-auth": "^4.10.3",
@@ -34,11 +35,13 @@
     "sharp": "^0.31.0",
     "superjson": "^1.10.0",
     "three": "^0.144.0",
+    "tone": "^14.7.77",
     "ws": "^8.8.1",
     "zod": "^3.19.1",
     "zustand": "^4.1.1"
   },
   "devDependencies": {
+    "@types/audiobuffer-to-wav": "^1.0.2",
     "@types/node": "18.0.0",
     "@types/node-fetch": "^2.6.2",
     "@types/react": "18.0.20",
