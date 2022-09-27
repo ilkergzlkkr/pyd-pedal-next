@@ -1,25 +1,25 @@
 import type React from "react";
 import type { NextPage } from "next";
-import { Fragment, useState, useEffect } from "react";
-import { Transition, Listbox, Disclosure } from "@headlessui/react";
-import { CheckIcon, ChevronUpIcon } from "@heroicons/react/solid";
+import { useState, useEffect } from "react";
+import { Disclosure } from "@headlessui/react";
+import { ChevronUpIcon } from "@heroicons/react/solid";
 import { ChevronDoubleRightIcon } from "@heroicons/react/outline";
 import { Layout } from "../components";
-import {
-  boards,
-  Board,
-  getBoardDescription,
-  getBoardName,
-  StatusResponse,
-} from "../utils/pypedal";
+
 import { trpc } from "../utils/trpc";
 import { useToastStore } from "../components/toast";
+import {
+  InputEmbedForPlayer,
+  LazyPlayer,
+  usePlayerStore,
+} from "../components/player";
 
 const PedalContent: NextPage = () => {
   const information =
     "Remember, this is a closed-beta feature. There could be any bug or issue. Please report it to the developer.";
 
   const { newToast } = useToastStore();
+  // const { player } = usePlayerStore();
   // show user the beta information once
   useEffect(() => {
     newToast({ title: "Closed-Beta", body: information });
@@ -27,42 +27,33 @@ const PedalContent: NextPage = () => {
 
   // user input
   const [input, setInput] = useState({ query: "", sent: false });
-  const [board, setBoard] = useState<Board>(boards[0]);
 
-  // response
-  const [response, setResponse] = useState<StatusResponse>();
+  // backport for idk why
+  // TODO: delete
+  const response = {
+    state: "loading",
+    status: { stage: "processing", percentage: 100 },
+    result: null,
+  };
 
-  trpc.proxy.pypedal.status.useSubscription(
-    {
-      url: input.query,
-      board_name: board,
-    },
-    {
-      enabled: input.sent,
-      onData(response) {
-        console.log("SERVER RESPONSE", response, "input", input);
-        setResponse(response);
-      },
-      onError({ message, data }) {
-        console.log(message);
-        setInput({ query: "", sent: false });
+  const { data: isAuthorized, isLoading } =
+    trpc.proxy.pypedal.isAuthorized.useQuery(undefined, {
+      refetchOnWindowFocus: false,
+    });
 
-        if (data) {
-          newToast({ title: "Error", body: message, type: "error" });
-        }
+  if (isLoading) return <div>Loading...</div>;
+  if (!isAuthorized) return <div>Not authorized</div>;
 
-        // special case for invalid board
-        if (data?.code === "BAD_REQUEST") {
-          if (data.zodError?.fieldErrors["url"]) {
-            newToast({
-              title: "Invalid URL",
-              body: "Please enter a valid URL.",
-              type: "error",
-            });
-          }
-        }
-      },
-    }
+  return (
+    <Layout>
+      <div className="flex justify-center text-white text-xl m-12 p-12 bg-purple-900">
+        <InputEmbedForPlayer />
+        <LazyPlayer />
+      </div>
+      <div className="h-64" />
+      <FAQs />
+      <div className="h-60" />
+    </Layout>
   );
 
   return (
@@ -93,7 +84,7 @@ const PedalContent: NextPage = () => {
                     }
                   ></input>
                   <div className="">
-                    <SelectBoard selected={board} setSelected={setBoard} />
+                    {/* <SelectBoard selected={board} setSelected={setBoard} /> */}
                   </div>
                   <button
                     className={`m-2 mt-4 px-5 py-3 text-6xl text-indigo-300 transition-colors duration-150 rounded-lg focus:shadow-outline ${
@@ -178,7 +169,7 @@ const PedalContent: NextPage = () => {
           </div>
           <div className="text-gray-300 mt-5 mb-5 text-xl">
             <p className="flex mb-5">
-              {getBoardName(board)}: {getBoardDescription(board)}
+              {/* {getBoardName(board)}: {getBoardDescription(board)} */}
             </p>
             <p>{information}</p>
           </div>
@@ -188,61 +179,6 @@ const PedalContent: NextPage = () => {
         <div className="h-60" />
       </div>
     </Layout>
-  );
-};
-
-export const SelectBoard: React.FC<{
-  selected: Board;
-  setSelected: React.Dispatch<React.SetStateAction<Board>>;
-}> = ({ selected, setSelected }) => {
-  return (
-    <Listbox value={selected} onChange={setSelected}>
-      <div className="flex container justify-center">
-        <Listbox.Button className="inline-flex px-32 rounded-lg bg-white py-2 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-          <span className="block truncate">{getBoardName(selected)}</span>
-          <span className="pointer-events-none">
-            <ChevronDoubleRightIcon className="h-5 w-5 text-gray-400" />
-          </span>
-        </Listbox.Button>
-        <Transition
-          as={Fragment}
-          leave="transition ease-in duration-100"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <Listbox.Options className="absolute mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {boards.map((board, idx) => (
-              <Listbox.Option
-                key={idx}
-                className={({ active }) =>
-                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                    active ? "bg-amber-100 text-amber-900" : "text-gray-900"
-                  }`
-                }
-                value={board}
-              >
-                {({ selected }) => (
-                  <>
-                    <span
-                      className={`block truncate ${
-                        selected ? "font-medium" : "font-normal"
-                      }`}
-                    >
-                      {getBoardName(board)}
-                    </span>
-                    {selected ? (
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                      </span>
-                    ) : null}
-                  </>
-                )}
-              </Listbox.Option>
-            ))}
-          </Listbox.Options>
-        </Transition>
-      </div>
-    </Listbox>
   );
 };
 

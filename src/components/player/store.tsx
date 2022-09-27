@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import create from "zustand";
 import * as Tone from "tone";
 import toWav from "audiobuffer-to-wav";
@@ -8,7 +7,6 @@ interface PlayerStore {
   src?: string;
   downloading: boolean;
   setSrc: (src: string) => void;
-  setPlayer: (player: Tone.Player) => void;
   toggle: () => void;
   setVolume: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setSlowed: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -17,9 +15,6 @@ interface PlayerStore {
 
 export const usePlayerStore = create<PlayerStore>()((set, get) => ({
   downloading: false,
-  async setPlayer(player: Tone.Player) {
-    set({ player });
-  },
   async setSrc(src) {
     const player =
       get().player ||
@@ -31,6 +26,8 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     player.debug = true;
     await player.load(src);
     player.volume.value = -25;
+    (globalThis as any).Tone = Tone;
+    (globalThis as any).player = player;
     set({ src, player });
   },
   async toggle() {
@@ -84,48 +81,3 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     set({ downloading: false });
   },
 }));
-
-export const MusicPlayer = () => {
-  const { player, downloading, toggle, setVolume, setSlowed, download } =
-    usePlayerStore();
-
-  useEffect(() => {
-    // player?.context.resume();
-    return () => {
-      console.log("player-effect-unload", player);
-      // player?.context.dispose();
-    };
-  }, [player]);
-
-  if (typeof window === "undefined") return null;
-  if (downloading) return <div>Downloading...</div>;
-  (globalThis as any).Tone = Tone;
-  (globalThis as any).player = player;
-  return (
-    <div>
-      <button onClick={toggle}>
-        {(player?.state || "no player").toString()}
-      </button>
-      <input
-        type="text"
-        placeholder="volume"
-        onBlur={setVolume}
-        onSubmit={setVolume}
-        className="w-20 text-black"
-      />
-      <input
-        type="text"
-        placeholder="slowed"
-        onBlur={setSlowed}
-        onSubmit={setSlowed}
-        className="w-20 text-black"
-      />
-      <p>playbackRate {player?.playbackRate}</p>
-      <p>state {player?.state}</p>
-      <p>context state {player?.context.state}</p>
-      <p>duration {player?.buffer.duration}</p>
-      <p>{player?.context.rawContext.currentTime}</p>
-      <button onClick={async () => download()}>download</button>
-    </div>
-  );
-};

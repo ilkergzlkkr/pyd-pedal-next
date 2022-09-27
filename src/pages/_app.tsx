@@ -1,7 +1,6 @@
 // src/pages/_app.tsx
 import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
 import { loggerLink } from "@trpc/client/links/loggerLink";
-import { wsLink, createWSClient } from "@trpc/client/links/wsLink";
 import { withTRPC } from "@trpc/next";
 import { SessionProvider } from "next-auth/react";
 import type { AppType } from "next/app";
@@ -25,19 +24,8 @@ const getBaseUrl = () => {
 };
 
 const getEndingLink = ({ url }: { url: string }) => {
-  // i hate javascript
-  if (typeof window === "undefined") {
-    return httpBatchLink({ url });
-  }
-  const client = createWSClient({
-    url:
-      process.env.NODE_ENV === "development"
-        ? `ws://localhost:3001`
-        : process.env.NEXT_PUBLIC_WS_URL || `ws://localhost:3000`,
-    // since we use ssr: false
-  });
-  return wsLink<AppRouter>({
-    client,
+  return httpBatchLink({
+    url,
   });
 };
 
