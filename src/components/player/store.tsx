@@ -3,39 +3,54 @@ import * as Tone from "tone";
 import toWav from "audiobuffer-to-wav";
 import download from "downloadjs";
 
+const defaults = {
+  volume: -25,
+  playbackRate: 0.85,
+  decay: 1,
+  wet: 0.5,
+  preDelay: 0.1,
+} as const;
+
 interface PlayerStore {
+  defaults: typeof defaults;
   player?: Tone.Player;
   src?: string;
   reverb?: Tone.Reverb;
   downloading: boolean;
+  currentTime: number;
   setSrc: (src: string) => void;
   toggle: () => void;
   setVolume: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setSlowed: (e: React.ChangeEvent<HTMLInputElement>) => void;
   download: () => void;
+  setCurrentTime: (time: number) => void;
 }
 
 export const usePlayerStore = create<PlayerStore>()((set, get) => ({
+  defaults,
   downloading: false,
+  currentTime: 0,
   async setSrc(src) {
+    const { decay, wet, preDelay, volume, playbackRate } = get().defaults;
     const reverb =
-      get().reverb ||
-      new Tone.Reverb({ decay: 10, wet: 1, preDelay: 0.1 }).toDestination();
+      get().reverb || new Tone.Reverb({ decay, wet, preDelay }).toDestination();
     const player =
       get().player ||
       new Tone.Player({
+        playbackRate,
+        volume,
         loop: true,
         onerror: console.error,
         onload: console.log,
       }).toDestination();
+    reverb.debug = true;
     player.debug = true;
     player.connect(reverb);
     await player.load(src);
-    player.volume.value = -25;
-    player.playbackRate = 0.85;
     (globalThis as any).Tone = Tone;
     (globalThis as any).player = player;
-    set({ src, player });
+    (globalThis as any).reverb = reverb;
+    set({ src, player, reverb, currentTime: 0 });
   },
   async toggle() {
     const player = get().player;
@@ -45,7 +60,7 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     } else if (player.state == "stopped") {
       player.start();
     }
-    set({ player });
+    set({ player, currentTime: 0 });
   },
   async setVolume(e: React.ChangeEvent<HTMLInputElement>) {
     const player = get().player;
@@ -79,7 +94,10 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     }, outputDuration);
     const wav = toWav(outputBuffer as unknown as AudioBuffer);
     const blob = new Blob([wav], { type: "audio/wav" });
-    download(blob, "output", "audio/wav");
+    download(blob, "output.wav", "audio/wav");
     set({ downloading: false });
+  },
+  setCurrentTime(time) {
+    set({ currentTime: time });
   },
 }));

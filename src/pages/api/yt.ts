@@ -12,12 +12,16 @@ const yt = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(403).end();
   }
 
-  if (req.method !== "POST") return res.status(400).end();
+  const { url } = JSON.parse(req.body);
+  if (req.method !== "POST" || typeof url !== "string")
+    return res.status(400).end();
   try {
-    const url = req.body.url;
-
+    const info = await ytdl.getInfo(url);
+    res.setHeader("x-yt-id", info.videoDetails.videoId);
+    res.setHeader("x-yt-title", encodeURIComponent(info.videoDetails.title));
+    res.setHeader("x-yt-thumb", info.videoDetails.thumbnails[0]?.url || "");
     res.setHeader("content-type", "audio/mpeg");
-    const stream = ytdl(url, {
+    const stream = ytdl.downloadFromInfo(info, {
       filter: "audioonly",
     });
     stream.on("finish", () => {

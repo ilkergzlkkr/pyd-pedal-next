@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { usePlayerStore } from "./store";
 import { MusicPlayer, InputEmbedForPlayer } from "./player";
 import { PlayerNavigator } from "./navigator";
+import { useDownloadYTVideo, usePlayerCurrentTimeQuery } from "./utils";
 
 const LazyPlayer = dynamic(
   () => import("./player").then((module) => module.MusicPlayer),
@@ -18,4 +19,6 @@ export {
   MusicPlayer,
   InputEmbedForPlayer,
   PlayerNavigator,
+  useDownloadYTVideo,
+  usePlayerCurrentTimeQuery,
 };
