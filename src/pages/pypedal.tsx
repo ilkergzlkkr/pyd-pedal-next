@@ -11,8 +11,22 @@ import { useToastStore } from "../components/toast";
 import {
   InputEmbedForPlayer,
   LazyPlayer,
+  PlayerNavigator,
   usePlayerStore,
 } from "../components/player";
+
+type DebugViewProps = { isLoading: boolean; isAuthorized?: boolean };
+
+const DebugView: React.FC<DebugViewProps> = ({ isLoading, isAuthorized }) => {
+  if (isLoading) return <div>Loading...</div>;
+  if (!isAuthorized) return <div>Not authorized</div>;
+  return (
+    <>
+      <InputEmbedForPlayer />
+      <LazyPlayer />
+    </>
+  );
+};
 
 const PedalContent: NextPage = () => {
   const information =
@@ -41,14 +55,13 @@ const PedalContent: NextPage = () => {
       refetchOnWindowFocus: false,
     });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!isAuthorized) return <div>Not authorized</div>;
-
   return (
     <Layout>
-      <div className="flex justify-center text-white text-xl m-12 p-12 bg-purple-900">
-        <InputEmbedForPlayer />
-        <LazyPlayer />
+      <div className="flex justify-center items-center text-white text-xl m-12 p-12 bg-slate-900">
+        <DebugView {...{ isLoading, isAuthorized }} />
+      </div>
+      <div className="flex justify-center">
+        <PlayerNavigator />
       </div>
       <div className="h-64" />
       <FAQs />

@@ -1,10 +1,12 @@
 import create from "zustand";
 import * as Tone from "tone";
 import toWav from "audiobuffer-to-wav";
+import download from "downloadjs";
 
 interface PlayerStore {
   player?: Tone.Player;
   src?: string;
+  reverb?: Tone.Reverb;
   downloading: boolean;
   setSrc: (src: string) => void;
   toggle: () => void;
@@ -16,6 +18,9 @@ interface PlayerStore {
 export const usePlayerStore = create<PlayerStore>()((set, get) => ({
   downloading: false,
   async setSrc(src) {
+    const reverb =
+      get().reverb ||
+      new Tone.Reverb({ decay: 10, wet: 1, preDelay: 0.1 }).toDestination();
     const player =
       get().player ||
       new Tone.Player({
@@ -24,8 +29,10 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
         onload: console.log,
       }).toDestination();
     player.debug = true;
+    player.connect(reverb);
     await player.load(src);
     player.volume.value = -25;
+    player.playbackRate = 0.85;
     (globalThis as any).Tone = Tone;
     (globalThis as any).player = player;
     set({ src, player });
@@ -72,12 +79,7 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     }, outputDuration);
     const wav = toWav(outputBuffer as unknown as AudioBuffer);
     const blob = new Blob([wav], { type: "audio/wav" });
-    const new_file = URL.createObjectURL(blob);
-    const tempLink = document.createElement("a");
-    tempLink.href = new_file;
-    tempLink.download = "filename";
-    tempLink.style.display = "none";
-    tempLink.click();
+    download(blob, "output", "audio/wav");
     set({ downloading: false });
   },
 }));

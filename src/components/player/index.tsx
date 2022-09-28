@@ -2,6 +2,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { usePlayerStore } from "./store";
 import { MusicPlayer, InputEmbedForPlayer } from "./player";
+import { PlayerNavigator } from "./navigator";
 
 const LazyPlayer = dynamic(
   () => import("./player").then((module) => module.MusicPlayer),
@@ -11,4 +12,10 @@ const LazyPlayer = dynamic(
   }
 );
 
-export { LazyPlayer, usePlayerStore, MusicPlayer, InputEmbedForPlayer };
+export {
+  LazyPlayer,
+  usePlayerStore,
+  MusicPlayer,
+  InputEmbedForPlayer,
+  PlayerNavigator,
+};

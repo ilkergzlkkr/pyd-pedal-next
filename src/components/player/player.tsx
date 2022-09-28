@@ -1,9 +1,17 @@
-import { useEffect, useState, createRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState, createRef, useCallback } from "react";
 import { usePlayerStore } from "./store";
 
 export const MusicPlayer = () => {
-  const { player, downloading, toggle, setVolume, setSlowed, download } =
-    usePlayerStore();
+  const {
+    player,
+    reverb,
+    downloading,
+    toggle,
+    setVolume,
+    setSlowed,
+    download,
+  } = usePlayerStore();
 
   useEffect(() => {
     // player?.context.resume();
@@ -13,52 +21,122 @@ export const MusicPlayer = () => {
     };
   }, [player]);
 
+  const { data: currentTime } = useQuery(
+    ["player", "currentTime"],
+    () => player?.context.currentTime || 0,
+    {
+      refetchInterval: 1000,
+    }
+  );
   if (typeof window === "undefined") return null;
   if (downloading) return <div>Downloading...</div>;
   return (
-    <div>
-      <button onClick={toggle}>
-        {(player?.state || "no player").toString()}
-      </button>
-      <input
-        type="text"
-        placeholder="volume"
-        onBlur={setVolume}
-        onSubmit={setVolume}
-        className="w-20 text-black"
-      />
-      <input
-        type="text"
-        placeholder="slowed"
-        onBlur={setSlowed}
-        onSubmit={setSlowed}
-        className="w-20 text-black"
-      />
-      <p>playbackRate {player?.playbackRate}</p>
-      <p>state {player?.state}</p>
-      <p>context state {player?.context.state}</p>
-      <p>duration {player?.buffer.duration}</p>
-      <p>{player?.context.rawContext.currentTime}</p>
-      <button onClick={async () => download()}>download</button>
-    </div>
+    <>
+      <div>
+        <button onClick={toggle}>
+          {(player?.state || "no player").toString()}
+        </button>
+        <label
+          htmlFor="steps-range"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+        >
+          Volume
+        </label>
+        <input
+          id="steps-range"
+          type="range"
+          min="-50"
+          max="1"
+          value={player?.volume.value.toFixed() || 0}
+          step="1"
+          onChange={setVolume}
+          className="w-full h-5 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
+
+        <label
+          htmlFor="steps-range"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+        >
+          Slowed
+        </label>
+        <input
+          id="steps-range"
+          type="range"
+          min="0.7"
+          max="1"
+          value={player?.playbackRate || 1}
+          step="0.01"
+          onChange={setSlowed}
+          className="w-full h-3 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
+        <label
+          htmlFor="steps-range"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+        >
+          Reverb
+        </label>
+        <div>
+          <input
+            id="steps-range"
+            type="range"
+            min="1"
+            max="5"
+            value={reverb?.decay.toString() || 1}
+            step="0.01"
+            className="h-2 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+          />
+          <input
+            id="steps-range"
+            type="range"
+            min="0.1"
+            max="5"
+            value={reverb?.preDelay.toString() || 0.1}
+            step="0.01"
+            className="h-2 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+          />
+          <input
+            id="steps-range"
+            type="range"
+            min="0"
+            max="1"
+            value={reverb?.wet.toString() || 0.1}
+            step="0.1"
+            className="h-2 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+          />
+        </div>
+        <p>playbackRate {player?.playbackRate}x</p>
+        <p>state {player?.state}</p>
+        <p>context state {player?.context.state}</p>
+        <p>duration {player?.buffer.duration}</p>
+        <p>{currentTime?.toFixed()}</p>
+        <p>{player?.context.listener.now().toFixed()}</p>
+        <button
+          disabled={!player?.state}
+          className="block p-2 m-2 bg-green-500 rounded-xl font-extrabold text-slate-300 shadow-xl border-4 border-slate-800 disabled:opacity-50"
+          onClick={async () => download()}
+        >
+          download
+        </button>
+      </div>
+    </>
   );
 };
 
 export const InputEmbedForPlayer = () => {
-  const store = usePlayerStore();
+  const [url, setUrl] = useState("");
+  const { setSrc } = usePlayerStore();
   const audioInputRef = createRef<HTMLInputElement>();
-  const onFileChange = (e?: React.FormEvent<HTMLFormElement>) => {
-    e?.preventDefault();
+  const onFileChange = () => {
     console.log("onFileChange", audioInputRef.current?.files);
     const file = audioInputRef.current?.files?.item(0);
     if (!file) return;
 
     const src = URL.createObjectURL(file);
-    store.setSrc(src);
+    setSrc(src);
   };
   return (
     <>
-      <form className="grid mr-5" onSubmit={onFileChange}>
+      <form className="mr-5">
         <label
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
           htmlFor="file_input"
@@ -78,12 +156,43 @@ export const InputEmbedForPlayer = () => {
           Any sound file (MAX. 300MB).
         </p>
         <button
+          id="file_load_action"
+          className="p-2 m-2 bg-indigo-500 rounded-xl font-extrabold text-slate-300 shadow-xl border-4 border-slate-800 disabled:opacity-50"
           onClick={(e) => {
             e.preventDefault();
             onFileChange();
           }}
         >
-          Load
+          load from file
+        </button>
+        <div className="p-5"></div>
+        <input
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="url"
+          className="container mb-8 text-black font-bold py-1 p-5 border border-indigo-800 rounded-sm disabled:opacity-50"
+        />
+        <button
+          disabled={!url}
+          className="p-2 m-2 bg-indigo-500 rounded-xl font-extrabold text-slate-300 shadow-xl border-4 border-slate-800 disabled:opacity-50"
+          onClick={async (e) => {
+            e.preventDefault();
+            const res = await fetch("/api/yt", {
+              method: "POST",
+              headers: [["Content-Type", "application/json"]],
+              body: JSON.stringify({ url }),
+            });
+            if (!res.ok) {
+              setUrl("");
+              return console.log("yt res not ok!");
+            }
+            const blob = await res.blob();
+            const src = URL.createObjectURL(blob);
+            setSrc(src);
+          }}
+        >
+          load from youtube
         </button>
       </form>
     </>
