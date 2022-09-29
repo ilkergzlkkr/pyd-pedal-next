@@ -84,8 +84,8 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     const outputBuffer = await Tone.Offline(async () => {
       set({ downloading: true });
       const cloneReverb = new Tone.Reverb({
-        decay: Number(reverb?.decay.toString()) || defaults.decay,
-        preDelay: Number(reverb?.preDelay.toString()) || defaults.preDelay,
+        decay: Number(reverb?.decay.toString() || defaults.decay),
+        preDelay: Number(reverb?.preDelay.toString() || defaults.preDelay),
         wet: reverb?.wet.value || defaults.wet,
       }).toDestination();
       const clonePlayer = new Tone.Player(player.buffer).connect(cloneReverb);
