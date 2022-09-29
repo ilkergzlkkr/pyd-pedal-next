@@ -77,17 +77,18 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     set({ player });
   },
   async download() {
-    const player = get().player;
+    const { player, reverb, defaults } = get();
     if (!player?.state) return;
     const outputDuration =
       player.buffer.duration * (2.01 - player.playbackRate);
     const outputBuffer = await Tone.Offline(async () => {
       set({ downloading: true });
-      const reverb = new Tone.Reverb({
-        decay: 0.5,
-        preDelay: 0.01,
+      const cloneReverb = new Tone.Reverb({
+        decay: Number(reverb?.decay.toString()) || defaults.decay,
+        preDelay: Number(reverb?.preDelay.toString()) || defaults.preDelay,
+        wet: reverb?.wet.value || defaults.wet,
       }).toDestination();
-      const clonePlayer = new Tone.Player(player.buffer).connect(reverb);
+      const clonePlayer = new Tone.Player(player.buffer).connect(cloneReverb);
       clonePlayer.playbackRate = player.playbackRate;
       await Tone.loaded();
       clonePlayer.start();
