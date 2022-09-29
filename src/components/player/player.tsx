@@ -2,7 +2,11 @@ import { useEffect, useState, createRef, useCallback } from "react";
 import { usePlayerStore } from "./store";
 import { useDownloadYTVideo, usePlayerCurrentTimeQuery } from "./utils";
 
-export const MusicPlayer = () => {
+export interface MusicPlayerProps {
+  any?: any;
+}
+
+export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
   const { player, downloading, toggle, setVolume, setSlowed, download } =
     usePlayerStore();
 
