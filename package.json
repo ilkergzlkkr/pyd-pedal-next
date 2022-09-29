@@ -3,11 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:ws": "nodemon --watch src --ext .ts,.tsx,js,jsx --signal SIGTERM --exec \"ts-node --files --project tsconfig.server.json src/server/router/wssDevServer.ts\"",
     "dev:next": "next dev",
     "dev": "run-p dev:*",
     "build": "next build",
-    "start:wss": "ts-node --files --project tsconfig.server.json src/server/router/wssProdServer.ts",
+    "start:next": "next start",
     "start": "run-p start:*",
     "lint": "next lint",
     "postinstall": "prisma generate"
