@@ -161,7 +161,7 @@ export const Layout: React.FC<{ children: JSX.Element | JSX.Element[] }> = ({
   children,
 }) => {
   return (
-    <>
+    <div data-theme="retro">
       <Head>
         <title>KedyBot</title>
         <link
@@ -247,7 +247,7 @@ export const Layout: React.FC<{ children: JSX.Element | JSX.Element[] }> = ({
       <main>
         <div className="bg-gray-900 pt-16">{children}</div>
       </main>
-    </>
+    </div>
   );
 };
 
