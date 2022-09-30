@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ account, user }) {
       if (!user.id) return false;
       try {
-        setGuilds(user.id, account);
+        await setGuilds(user.id, account);
         return true;
       } catch (e) {
         console.error(e);

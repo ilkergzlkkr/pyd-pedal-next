@@ -14,16 +14,16 @@ export const authenticatedProcedure = t.procedure.use(({ ctx, next }) => {
 
 export const authorizedKedyProcedure = authenticatedProcedure.use(
   async ({ ctx, next }) => {
-    if (
-      !(await ctx.prisma.userGuild.findUnique({
-        where: {
-          id_userId: {
-            id: "223090625224900608",
-            userId: ctx.session.user.id,
-          },
+    const inKedyGuild = await ctx.prisma.userGuild.findUnique({
+      where: {
+        id_userId: {
+          id: "223090625224900608",
+          userId: ctx.session.user.id,
         },
-      }))
-    ) {
+      },
+    });
+
+    if (!inKedyGuild) {
       throw new TRPCError({
         code: "FORBIDDEN",
         message: "You are not special",

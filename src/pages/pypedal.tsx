@@ -53,6 +53,7 @@ const PedalContent: NextPage = () => {
   const { data: isAuthorized, isLoading } =
     trpc.proxy.pypedal.isAuthorized.useQuery(undefined, {
       refetchOnWindowFocus: false,
+      retry: false,
     });
 
   return (

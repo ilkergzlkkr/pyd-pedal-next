@@ -21,7 +21,9 @@ export const setGuilds = async (id: string, account: Account) => {
     data: {
       guilds: {
         deleteMany: {},
-        create: parsed,
+        createMany: {
+          data: parsed,
+        },
       },
     },
   });
