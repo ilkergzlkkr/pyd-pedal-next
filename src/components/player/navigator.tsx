@@ -16,12 +16,12 @@ export const PlayerNavigator = () => {
         {Left15}
         <button
           className="transition-all duration-150 hover:bg-slate-900 hover:rounded-md ease-out"
-          onClick={(e) => toggle()}
+          onClick={() => toggle()}
         >
           {Play}
         </button>
         <button
-          onClick={(e) => {
+          onClick={() => {
             if (player) {
               player.start(undefined, 15);
             }

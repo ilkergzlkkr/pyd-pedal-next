@@ -124,9 +124,18 @@ export const Header: React.FC<{
               <div className="mt-6 px-5">
                 <p className="text-center text-base font-medium text-gray-500">
                   {session ? (
-                    <a className="text-gray-900 hover:underline">
-                      Logged in as {session?.user?.name}
-                    </a>
+                    <>
+                      <a className="text-gray-900 hover:underline">
+                        Logged in as {session?.user?.name}
+                      </a>
+                      {" | "}
+                      <button
+                        onClick={() => signOut()}
+                        className="p-1 rounded-md shadow bg-indigo-600 text-white font-medium hover:bg-indigo-700"
+                      >
+                        Logout
+                      </button>
+                    </>
                   ) : (
                     <>
                       Existing user?{" "}
