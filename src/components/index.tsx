@@ -4,15 +4,29 @@ import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { ChevronRightIcon } from "@heroicons/react/solid";
 import { useSession, signIn, signOut } from "next-auth/react";
 
-import { Announcement } from "./modals";
-import { Toast } from "./toast";
 import Link from "next/link";
 import Head from "next/head";
+import create from "zustand";
+
+import { Announcement } from "./modals";
+import { Toast } from "./toast";
 
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Equalizer", href: "/pypedal" },
 ] as const;
+
+export type ThemeModes = "retro" | "dracula" | "synthwave";
+
+interface Theme {
+  mode: ThemeModes;
+  setMode(mode: ThemeModes): void;
+}
+
+export const useTheme = create<Theme>((set) => ({
+  mode: "synthwave",
+  setMode: (mode) => set({ mode }),
+}));
 
 export const Header: React.FC<{
   navigation: typeof navigation;
@@ -160,8 +174,9 @@ export const Header: React.FC<{
 export const Layout: React.FC<{ children: JSX.Element | JSX.Element[] }> = ({
   children,
 }) => {
+  const { mode } = useTheme();
   return (
-    <div data-theme="retro">
+    <div data-theme={mode}>
       <Head>
         <title>KedyBot</title>
         <link

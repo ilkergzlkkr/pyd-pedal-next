@@ -1,4 +1,4 @@
-import { useEffect, useState, createRef, useCallback } from "react";
+import { useEffect, useState, createRef } from "react";
 import { usePlayerStore } from "./store";
 import { useDownloadYTVideo, usePlayerCurrentTimeQuery } from "./utils";
 
@@ -24,15 +24,10 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
   return (
     <>
       <div>
-        <button onClick={toggle}>
+        <button className="flex btn btn-ghost" onClick={toggle}>
           {(player?.state || "no player").toString()}
         </button>
-        <label
-          htmlFor="steps-range"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-        >
-          Volume
-        </label>
+        <span className="label-text">Volume</span>
         <input
           id="steps-range"
           type="range"
@@ -41,25 +36,25 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
           value={player?.volume.value.toFixed() || 0}
           step="1"
           onChange={setVolume}
-          className="w-full h-5 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+          className="range"
         />
-
-        <label
-          htmlFor="steps-range"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-        >
-          Slowed
-        </label>
+        <span className="label-text">Slowed</span>
         <input
-          id="steps-range"
+          className="range range-primary"
           type="range"
           min="0.7"
           max="1"
           value={player?.playbackRate || 1}
           step="0.01"
           onChange={setSlowed}
-          className="w-full h-3 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
+        <div className="w-full flex justify-between text-xs px-2">
+          <span>|</span>
+          <span>|</span>
+          <span>|</span>
+          <span>|</span>
+          <span>|</span>
+        </div>
         <ReverbMixer />
         <p>playbackRate {player?.playbackRate}x</p>
         <p>state {player?.state}</p>
@@ -69,7 +64,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
         <p>{player?.context.listener.now().toFixed()}</p>
         <button
           disabled={!player?.state}
-          className="block p-2 m-2 bg-green-500 rounded-xl font-extrabold text-slate-300 shadow-xl border-4 border-slate-800 disabled:opacity-50"
+          className="btn btn-success mt-5"
           onClick={async () => download()}
         >
           download
@@ -111,14 +106,9 @@ export const InputEmbedForPlayer = () => {
   return (
     <>
       <form className="mr-5">
-        <label
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-          htmlFor="file_input"
-        >
-          Upload file
-        </label>
+        <span className="label-text">Upload file</span>
         <input
-          className="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+          className="block w-full text-sm bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
           type="file"
           accept="audio/*"
           ref={audioInputRef}
@@ -165,55 +155,50 @@ export const InputEmbedForPlayer = () => {
 };
 
 export const ReverbMixer = () => {
-  const { reverb } = usePlayerStore();
+  console.log("ReverbMixer");
+  const reverb = usePlayerStore((state) => state.reverb);
   if (!reverb)
     return (
-      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+      <label className="block mb-2 text-sm font-medium dark:text-gray-300">
         Reverb - Disabled
       </label>
     );
   return (
     <>
-      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-        Reverb
-      </label>
+      <span className="label-text">Reverb</span>
+      <div className="p-5"></div>
+
       <div>
         <div>
-          <label className="m-1 text-xs font-medium text-gray-900 dark:text-gray-300">
-            decay
-          </label>
+          <span className="label-text">Decay {reverb.decay.toString()}</span>
           <input
             id="steps-range"
             type="range"
             min="1"
             max="5"
-            step="0.01"
+            step="0.05"
             value={reverb.decay.toString() || 1}
             onChange={(e) => (reverb.decay = parseFloat(e.target.value))}
-            className="h-2 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+            className="range"
           />
-          {reverb.decay.toString()}
         </div>
         <div>
-          <label className="m-1 text-xs font-medium text-gray-900 dark:text-gray-300">
-            pre delay
-          </label>
+          <span className="label-text">
+            Pre Delay {reverb.preDelay.toString()}
+          </span>
           <input
             id="steps-range"
             type="range"
             min="0"
             max="0.3"
-            step="0.01"
+            step="0.05"
             value={reverb.preDelay.toString() || 0.1}
             onChange={(e) => (reverb.preDelay = parseFloat(e.target.value))}
-            className="h-2 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+            className="range"
           />
-          {reverb.preDelay.toString()}
         </div>
         <div>
-          <label className="m-1 text-xs font-medium text-gray-900 dark:text-gray-300">
-            wet
-          </label>
+          <span className="label-text">Wet {reverb.wet.value}</span>
           <input
             id="steps-range"
             type="range"
@@ -222,9 +207,8 @@ export const ReverbMixer = () => {
             step="0.1"
             value={reverb.wet.value || 0.1}
             onChange={(e) => (reverb.wet.value = parseFloat(e.target.value))}
-            className="h-2 bg-gray-200 form-range rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+            className="range"
           />
-          {reverb.wet.value}
         </div>
       </div>
     </>
