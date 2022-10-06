@@ -16,17 +16,35 @@ const navigation = [
   { name: "Equalizer", href: "/pypedal" },
 ] as const;
 
-export type ThemeModes = "retro" | "dracula" | "synthwave";
+export const themeModes = ["retro", "dracula", "synthwave"] as const;
+export type ThemeMode = typeof themeModes[number];
 
 interface Theme {
-  mode: ThemeModes;
-  setMode(mode: ThemeModes): void;
+  mode: ThemeMode;
+  setMode(mode: ThemeMode): void;
 }
 
 export const useTheme = create<Theme>((set) => ({
   mode: "synthwave",
   setMode: (mode) => set({ mode }),
 }));
+
+const ChangeThemeComponent: React.FC = () => {
+  const { mode, setMode } = useTheme();
+  return (
+    <select
+      className="select w-full max-w-xs"
+      onChange={(e) => setMode(e.target.value as ThemeMode)}
+    >
+      <option disabled selected>
+        Curent Theme: {mode}
+      </option>
+      {themeModes.map((item) => (
+        <option value={item}>{item}</option>
+      ))}
+    </select>
+  );
+};
 
 export const Header: React.FC<{
   navigation: typeof navigation;
@@ -50,6 +68,7 @@ export const Header: React.FC<{
                 </a>
               </Link>
               <div className="-mr-2 flex items-center">
+                <ChangeThemeComponent />
                 <Popover.Button className="bg-gray-900 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-800 focus:outline-none focus:ring-2 focus-ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   <MenuIcon className="h-6 w-6" aria-hidden="true" />
@@ -106,7 +125,7 @@ export const Header: React.FC<{
           <div className="rounded-3xl shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
             <div className="px-5 pt-4 flex items-center justify-between">
               <div>
-                <h1 className="h-8 w-auto">KedyBot</h1>
+                <h1 className="text-black h-8 w-auto">KedyBot</h1>
               </div>
               <div className="-mr-2">
                 <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600">
