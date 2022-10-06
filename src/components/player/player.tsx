@@ -121,7 +121,7 @@ export const InputEmbedForPlayer = () => {
         </p>
         <button
           id="file_load_action"
-          className="p-2 m-2 bg-indigo-500 rounded-xl font-extrabold text-slate-300 shadow-xl border-4 border-slate-800 disabled:opacity-50"
+          className="btn btn-secondary mt-5"
           onClick={(e) => {
             e.preventDefault();
             onFileChange();
@@ -136,11 +136,11 @@ export const InputEmbedForPlayer = () => {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Youtube url"
-          className="container mb-8 py-1 p-5 text-black font-boldborder border-indigo-800 rounded-sm disabled:opacity-50 placeholder:font-extrabold"
+          className="input input-bordered font-bold input-secondary w-full max-w-xs placeholder:font-extrabold"
         />
         <button
           disabled={!url || !downloadYTVideo.isIdle}
-          className="p-2 m-2 bg-indigo-500 rounded-xl font-extrabold text-slate-300 shadow-xl border-4 border-slate-800 disabled:opacity-50"
+          className="btn btn-secondary mt-5"
           onClick={async (e) => {
             e.preventDefault();
             console.log("downloadYTVideo", url);
@@ -155,8 +155,7 @@ export const InputEmbedForPlayer = () => {
 };
 
 export const ReverbMixer = () => {
-  console.log("ReverbMixer");
-  const reverb = usePlayerStore((state) => state.reverb);
+  const { reverb, setReverb } = usePlayerStore();
   if (!reverb)
     return (
       <label className="block mb-2 text-sm font-medium dark:text-gray-300">
@@ -165,8 +164,8 @@ export const ReverbMixer = () => {
     );
   return (
     <>
-      <span className="label-text">Reverb</span>
       <div className="p-5"></div>
+      <span className="label-text">Reverb</span>
 
       <div>
         <div>
@@ -178,8 +177,8 @@ export const ReverbMixer = () => {
             max="5"
             step="0.05"
             value={reverb.decay.toString() || 1}
-            onChange={(e) => (reverb.decay = parseFloat(e.target.value))}
-            className="range"
+            onChange={(e) => setReverb({ decay: e.target.value })}
+            className="range range-secondary"
           />
         </div>
         <div>
@@ -191,10 +190,10 @@ export const ReverbMixer = () => {
             type="range"
             min="0"
             max="0.3"
-            step="0.05"
+            step="0.01"
             value={reverb.preDelay.toString() || 0.1}
-            onChange={(e) => (reverb.preDelay = parseFloat(e.target.value))}
-            className="range"
+            onChange={(e) => setReverb({ preDelay: e.target.value })}
+            className="range range-secondary"
           />
         </div>
         <div>
@@ -206,8 +205,8 @@ export const ReverbMixer = () => {
             max="1"
             step="0.1"
             value={reverb.wet.value || 0.1}
-            onChange={(e) => (reverb.wet.value = parseFloat(e.target.value))}
-            className="range"
+            onChange={(e) => setReverb({ wet: e.target.value })}
+            className="range range-secondary"
           />
         </div>
       </div>

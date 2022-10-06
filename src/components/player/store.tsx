@@ -24,6 +24,12 @@ interface PlayerStore {
   setSlowed: (e: React.ChangeEvent<HTMLInputElement>) => void;
   download: () => void;
   setCurrentTime: (time: number) => void;
+  setReverb: (opts: {
+    enabled?: boolean;
+    decay?: any;
+    wet?: any;
+    preDelay?: any;
+  }) => void;
 }
 
 export const usePlayerStore = create<PlayerStore>()((set, get) => ({
@@ -100,5 +106,16 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
   },
   setCurrentTime(time) {
     set({ currentTime: time });
+  },
+  setReverb({ enabled, decay, preDelay, wet }) {
+    const reverb = get().reverb;
+    if (!reverb) return;
+    if (enabled === false) {
+      reverb.dispose();
+    }
+    reverb.decay = parseFloat(decay) || reverb.decay;
+    reverb.preDelay = parseFloat(preDelay) || reverb.preDelay;
+    reverb.wet.value = parseFloat(wet) || reverb.wet.value;
+    set({ reverb });
   },
 }));
