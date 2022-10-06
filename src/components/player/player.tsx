@@ -76,13 +76,11 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
 
 export const InputEmbedForPlayer = () => {
   const [url, setUrl] = useState("");
+  const [file, setFile] = useState<File>();
   const { setSrc } = usePlayerStore();
-  const audioInputRef = createRef<HTMLInputElement>();
   const downloadYTVideo = useDownloadYTVideo();
 
-  const onFileChange = () => {
-    console.log("onFileChange", audioInputRef.current?.files);
-    const file = audioInputRef.current?.files?.item(0);
+  const handleUpload = () => {
     if (!file) return;
     const src = URL.createObjectURL(file);
     setSrc(src);
@@ -109,6 +107,7 @@ export const InputEmbedForPlayer = () => {
           onClick={() => {
             downloadYTVideo.reset();
             setUrl("");
+            setFile(undefined);
           }}
         >
           Reset
@@ -132,7 +131,7 @@ export const InputEmbedForPlayer = () => {
             className="block w-full text-sm bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
             type="file"
             accept="audio/*"
-            ref={audioInputRef}
+            onChange={(e) => setFile(e.target.files?.item(0) || undefined)}
           />
           <p
             className="mt-1 text-sm text-gray-500 dark:text-gray-300"
@@ -143,15 +142,16 @@ export const InputEmbedForPlayer = () => {
           <button
             id="file_load_action"
             className="btn btn-secondary mt-5"
+            disabled={!file}
             onClick={(e) => {
               e.preventDefault();
-              onFileChange();
+              handleUpload();
             }}
           >
             load from file
           </button>
         </div>
-        <div className="p-7"></div>
+        <div className="divider p-7">OR</div>
         <div className="input-group">
           <input
             disabled={!downloadYTVideo.isIdle}
