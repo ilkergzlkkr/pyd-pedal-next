@@ -40,7 +40,7 @@ const ChangeThemeComponent: React.FC = () => {
         Curent Theme: {mode}
       </option>
       {themeModes.map((item) => (
-        <option value={item}>{item}</option>
+        <option key={item} value={item}>{item}</option>
       ))}
     </select>
   );
