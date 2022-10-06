@@ -100,55 +100,79 @@ export const InputEmbedForPlayer = () => {
     setSrc(src);
   }, [downloadYTVideo.isSuccess, downloadYTVideo.isError]);
 
-  if (downloadYTVideo.isError) return <div>yt download error</div>;
-  if (downloadYTVideo.isLoading) return <div>yt audio downloading</div>;
+  if (downloadYTVideo.isError)
+    return (
+      <div className="flex-1 input-group">
+        <span>Failed to download video</span>
+        <button
+          className="btn btn-error"
+          onClick={() => {
+            downloadYTVideo.reset();
+            setUrl("");
+          }}
+        >
+          Reset
+        </button>
+      </div>
+    );
+  if (downloadYTVideo.isLoading)
+    return (
+      <div className="flex-1">
+        <span>Downloading Youtube video</span>
+        <progress className="progress bg-current w-56"></progress>
+      </div>
+    );
 
   return (
     <>
       <form className="mr-5">
-        <span className="label-text">Upload file</span>
-        <input
-          className="block w-full text-sm bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-          type="file"
-          accept="audio/*"
-          ref={audioInputRef}
-        />
-        <p
-          className="mt-1 text-sm text-gray-500 dark:text-gray-300"
-          id="file_input_help"
-        >
-          Any sound file (MAX. 300MB).
-        </p>
-        <button
-          id="file_load_action"
-          className="btn btn-secondary mt-5"
-          onClick={(e) => {
-            e.preventDefault();
-            onFileChange();
-          }}
-        >
-          load from file
-        </button>
-        <div className="p-5"></div>
-        <input
-          disabled={!downloadYTVideo.isIdle}
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Youtube url"
-          className="input input-bordered font-bold input-secondary w-full max-w-xs placeholder:font-extrabold"
-        />
-        <button
-          disabled={!url || !downloadYTVideo.isIdle}
-          className="btn btn-secondary mt-5"
-          onClick={async (e) => {
-            e.preventDefault();
-            console.log("downloadYTVideo", url);
-            downloadYTVideo.mutate(url);
-          }}
-        >
-          load from youtube
-        </button>
+        <div className="input-group input-group-vertical">
+          <span className="label-text">Upload file</span>
+          <input
+            className="block w-full text-sm bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            type="file"
+            accept="audio/*"
+            ref={audioInputRef}
+          />
+          <p
+            className="mt-1 text-sm text-gray-500 dark:text-gray-300"
+            id="file_input_help"
+          >
+            Any sound file (MAX. 300MB).
+          </p>
+          <button
+            id="file_load_action"
+            className="btn btn-secondary mt-5"
+            onClick={(e) => {
+              e.preventDefault();
+              onFileChange();
+            }}
+          >
+            load from file
+          </button>
+        </div>
+        <div className="p-7"></div>
+        <div className="input-group">
+          <input
+            disabled={!downloadYTVideo.isIdle}
+            type="text"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="Youtube url"
+            className="input input-bordered font-bold input-secondary w-full max-w-xs placeholder:font-extrabold"
+          />
+          <button
+            disabled={!url || !downloadYTVideo.isIdle}
+            className="btn btn-secondary"
+            onClick={async (e) => {
+              e.preventDefault();
+              console.log("downloadYTVideo", url);
+              downloadYTVideo.mutate(url);
+            }}
+          >
+            load from youtube
+          </button>
+        </div>
       </form>
     </>
   );

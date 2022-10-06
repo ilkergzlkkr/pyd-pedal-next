@@ -25,7 +25,7 @@ interface Theme {
 }
 
 export const useTheme = create<Theme>((set) => ({
-  mode: "synthwave",
+  mode: "dracula",
   setMode: (mode) => set({ mode }),
 }));
 
@@ -33,7 +33,7 @@ const ChangeThemeComponent: React.FC = () => {
   const { mode, setMode } = useTheme();
   return (
     <select
-      className="select w-full max-w-xs"
+      className="select select-bordered font-bold w-full max-w-xs"
       onChange={(e) => setMode(e.target.value as ThemeMode)}
     >
       <option disabled selected>
@@ -52,7 +52,7 @@ export const Header: React.FC<{
   const { data: session } = useSession();
   return (
     <Popover as="header" className="relative">
-      <div className="bg-gray-900 pt-6 p-4">
+      <div className="pt-6 p-4">
         <nav
           className="relative max-w-7xl mx-auto flex items-center justify-between px-6"
           aria-label="Global"
@@ -69,7 +69,7 @@ export const Header: React.FC<{
               </Link>
               <div className="-mr-2 flex items-center">
                 <ChangeThemeComponent />
-                <Popover.Button className="bg-gray-900 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-800 focus:outline-none focus:ring-2 focus-ring-inset focus:ring-white">
+                <Popover.Button className="rounded-md ml-2 p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-800 focus:outline-none focus:ring-2 focus-ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   <MenuIcon className="h-6 w-6" aria-hidden="true" />
                 </Popover.Button>
@@ -279,7 +279,7 @@ export const Layout: React.FC<{ children: JSX.Element | JSX.Element[] }> = ({
       <Header navigation={navigation} />
       <Toast />
       <main>
-        <div className="bg-gray-900 pt-16">{children}</div>
+        <div className="pt-16">{children}</div>
       </main>
     </div>
   );
@@ -287,32 +287,30 @@ export const Layout: React.FC<{ children: JSX.Element | JSX.Element[] }> = ({
 
 export const Content = () => {
   return (
-    <Layout>
-      <div className="mx-auto max-w-7xl">
-        <div className="mx-auto max-w-2xl px-6 text-center">
-          <div className="">
-            <Link href="/pypedal">
-              <a className="inline-flex items-center text-white bg-black rounded-full p-1 pr-2 text-base hover:text-gray-200">
-                <span className="px-3 py-0.5 text-white text-xs font-semibold leading-5 uppercase tracking-wide bg-indigo-500 rounded-full">
-                  We{"'"}re developing
-                </span>
-                <span className="ml-4 text-sm">Visit our Equalizer page</span>
-                <ChevronRightIcon
-                  className="ml-2 w-5 h-5 text-gray-500"
-                  aria-hidden="true"
-                />
-              </a>
-            </Link>
-            <h1 className="tracking-tight font-extrabold text-white mt-5 text-6xl">
-              <span className="block">A better way to</span>
-              <span className="block text-indigo-400">have fun in discord</span>
-            </h1>
-            <p className="text-gray-300 mt-5 text-xl">
-              As you can clearly see... we are working!
-            </p>
-          </div>
+    <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-2xl px-6 text-center">
+        <div className="">
+          <Link href="/pypedal">
+            <a className="inline-flex items-center text-white rounded-full p-1 pr-2 text-base hover:text-gray-200">
+              <span className="px-3 py-0.5 text-white text-xs font-semibold leading-5 uppercase tracking-wide rounded-full">
+                We{"'"}re developing
+              </span>
+              <span className="ml-4 text-sm">Visit our Equalizer page</span>
+              <ChevronRightIcon
+                className="ml-2 w-5 h-5 text-gray-500"
+                aria-hidden="true"
+              />
+            </a>
+          </Link>
+          <h1 className="tracking-tight font-extrabold text-white mt-5 text-6xl">
+            <span className="block">A better way to</span>
+            <span className="block text-indigo-400">have fun in discord</span>
+          </h1>
+          <p className="text-gray-300 mt-5 text-xl">
+            As you can clearly see... we are working!
+          </p>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };

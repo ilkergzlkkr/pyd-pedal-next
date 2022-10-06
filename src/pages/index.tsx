@@ -4,7 +4,7 @@ import Image from "next/image";
 import catDies from "../../public/dies-cat.gif";
 import useEventListener from "../utils/useEventListener";
 
-import { Content } from "../components";
+import { Content, Layout } from "../components";
 
 const Home: NextPage = () => {
   const [isCatDead, setIsCatDead] = useState(false);
@@ -13,9 +13,9 @@ const Home: NextPage = () => {
   };
   useEventListener("keydown", handleKeyDown);
   return (
-    <>
+    <Layout>
       <Content />
-      <div className="bg-gray-900">
+      <div>
         <div className="pt-7 flex justify-center">
           {isCatDead ? (
             <p>respected...</p>
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
         </div>
         <div className="h-96"></div>
       </div>
-    </>
+    </Layout>
   );
 };
 

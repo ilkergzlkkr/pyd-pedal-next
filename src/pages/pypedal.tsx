@@ -58,13 +58,15 @@ const PedalContent: NextPage = () => {
 
   return (
     <Layout>
-      <div className="flex justify-center items-center text-white text-xl m-12 p-12 bg-slate-900">
-        <DebugView {...{ isLoading, isAuthorized }} />
+      <div className="mr-72 ml-72 mockup-window border border-amber-600 bg-base-300">
+        <div className="flex justify-center items-center text-white text-xl m-12 p-12">
+          <DebugView {...{ isLoading, isAuthorized }} />
+        </div>
+        <div className="flex justify-center">
+          <PlayerNavigator />
+        </div>
+        <div className="h-64" />
       </div>
-      <div className="flex justify-center">
-        <PlayerNavigator />
-      </div>
-      <div className="h-64" />
       <FAQs />
       <div className="h-60" />
     </Layout>
