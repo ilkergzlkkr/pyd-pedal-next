@@ -32,17 +32,22 @@ export const useTheme = create<Theme>((set) => ({
 const ChangeThemeComponent: React.FC = () => {
   const { mode, setMode } = useTheme();
   return (
-    <select
-      className="select select-bordered font-bold w-full max-w-xs"
-      onChange={(e) => setMode(e.target.value as ThemeMode)}
-    >
-      <option disabled selected>
-        Curent Theme: {mode}
-      </option>
-      {themeModes.map((item) => (
-        <option key={item} value={item}>{item}</option>
-      ))}
-    </select>
+    <div className="indicator">
+      <span className="indicator-item badge badge-info">Beta</span>
+        <select
+          className="select select-bordered font-bold w-full max-w-xs"
+          onChange={(e) => setMode(e.target.value as ThemeMode)}
+        >
+          <option disabled selected>
+            Curent Theme: {mode}
+          </option>
+          {themeModes.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+    </div>
   );
 };
 
