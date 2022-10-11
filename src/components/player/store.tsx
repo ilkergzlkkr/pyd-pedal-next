@@ -30,6 +30,7 @@ interface PlayerStore {
     wet?: any;
     preDelay?: any;
   }) => void;
+  kill: () => void;
 }
 
 export const usePlayerStore = create<PlayerStore>()((set, get) => ({
@@ -117,5 +118,13 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     reverb.preDelay = parseFloat(preDelay) || reverb.preDelay;
     reverb.wet.value = parseFloat(wet) || reverb.wet.value;
     set({ reverb });
+  },
+  kill() {
+    const player = get().player;
+    const reverb = get().reverb;
+    if (!player || !reverb) return;
+    player.dispose();
+    reverb.dispose();
+    set({ player: undefined, reverb: undefined });
   },
 }));

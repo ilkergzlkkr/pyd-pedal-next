@@ -7,7 +7,7 @@ export interface MusicPlayerProps {
 }
 
 export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
-  const { player, downloading, toggle, setVolume, setSlowed, download } =
+  const { player, downloading, toggle, setVolume, setSlowed, download, kill } =
     usePlayerStore();
 
   useEffect(() => {
@@ -64,10 +64,17 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
         <p>{player?.context.listener.now().toFixed()}</p>
         <button
           disabled={!player?.state}
-          className="btn btn-success mt-5"
+          className="btn btn-success m-5"
           onClick={async () => download()}
         >
           download
+        </button>
+        <button
+          disabled={!player?.state}
+          className="btn btn-error m-5"
+          onClick={async () => kill()}
+        >
+          delete
         </button>
       </div>
     </>

@@ -20,11 +20,17 @@ type DebugViewProps = { isLoading: boolean; isAuthorized?: boolean };
 const DebugView: React.FC<DebugViewProps> = ({ isLoading, isAuthorized }) => {
   if (isLoading) return <div>Loading...</div>;
   if (!isAuthorized) return <div>Not authorized</div>;
+
+  const player = usePlayerStore((state) => state.player);
+
+  if (!player) return <InputEmbedForPlayer />;
   return (
-    <>
-      <InputEmbedForPlayer />
+    <div>
       <LazyPlayer />
-    </>
+      <div className="flex justify-center">
+        <PlayerNavigator />
+      </div>
+    </div>
   );
 };
 
@@ -62,11 +68,8 @@ const PedalContent: NextPage = () => {
         <div className="flex justify-center items-center text-white text-xl m-12 p-12">
           <DebugView {...{ isLoading, isAuthorized }} />
         </div>
-        <div className="flex justify-center">
-          <PlayerNavigator />
-        </div>
-        <div className="h-64" />
       </div>
+        <div className="h-64" />
       <FAQs />
       <div className="h-60" />
     </Layout>

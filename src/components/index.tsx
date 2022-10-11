@@ -33,20 +33,20 @@ const ChangeThemeComponent: React.FC = () => {
   const { mode, setMode } = useTheme();
   return (
     <div className="indicator">
-      <span className="indicator-item badge badge-info">Beta</span>
-        <select
-          className="select select-bordered font-bold w-full max-w-xs"
-          onChange={(e) => setMode(e.target.value as ThemeMode)}
-        >
-          <option disabled selected>
-            Curent Theme: {mode}
+      <select
+        className="select select-bordered font-bold w-full max-w-xs"
+        onChange={(e) => setMode(e.target.value as ThemeMode)}
+      >
+        <option disabled selected>
+          Curent Theme: {mode}
+        </option>
+        {themeModes.map((item) => (
+          <option key={item} value={item}>
+            {item}
           </option>
-          {themeModes.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
+        ))}
+      </select>
+      <span className="mr-2 indicator-item badge badge-info">Beta</span>
     </div>
   );
 };
