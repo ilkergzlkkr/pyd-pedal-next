@@ -20,7 +20,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
 
   const { data: currentTime } = usePlayerCurrentTimeQuery();
   if (typeof window === "undefined") return null;
-  if (downloading) return <div>Downloading...</div>;
+  if (downloading) return <button className="btn loading">Downloading...</button>;
   return (
     <>
       <div>
@@ -56,22 +56,31 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
           <span>|</span>
         </div>
         <ReverbMixer />
-        <p>playbackRate {player?.playbackRate}x</p>
-        <p>state {player?.state}</p>
-        <p>context state {player?.context.state}</p>
-        <p>duration {player?.buffer.duration}</p>
-        <p>{currentTime?.toFixed()}</p>
-        <p>{player?.context.listener.now().toFixed()}</p>
+        <div className="collapse text-info collapse-plus border border-base-300 bg-base-100 rounded-box">
+          <input type="checkbox" />
+          <div className="collapse-title text-xs text-secondary-focus">
+            Click me to show/hide debug content
+          </div>
+          <div className="collapse-content">
+            <p>(you are special to see this)</p>
+            <p>playbackRate {player?.playbackRate}x</p>
+            <p>state {player?.state}</p>
+            <p>context state {player?.context.state}</p>
+            <p>duration {player?.buffer.duration}</p>
+            <p>{currentTime?.toFixed()}</p>
+            <p>{player?.context.listener.now().toFixed()}</p>
+          </div>
+        </div>
         <button
           disabled={!player?.state}
-          className="btn btn-success m-5"
+          className="btn btn-primary m-5"
           onClick={async () => download()}
         >
           download
         </button>
         <button
           disabled={!player?.state}
-          className="btn btn-error m-5"
+          className="btn btn-accent m-5"
           onClick={async () => kill()}
         >
           delete

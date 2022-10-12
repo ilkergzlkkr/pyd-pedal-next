@@ -18,7 +18,7 @@ import {
 type DebugViewProps = { isLoading: boolean; isAuthorized?: boolean };
 
 const DebugView: React.FC<DebugViewProps> = ({ isLoading, isAuthorized }) => {
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <button className="btn loading">Loading...</button>;
   if (!isAuthorized) return <div>Not authorized</div>;
 
   const player = usePlayerStore((state) => state.player);
