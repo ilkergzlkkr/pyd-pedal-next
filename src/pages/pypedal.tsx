@@ -18,11 +18,10 @@ import {
 type DebugViewProps = { isLoading: boolean; isAuthorized?: boolean };
 
 const DebugView: React.FC<DebugViewProps> = ({ isLoading, isAuthorized }) => {
-  if (isLoading) return <button className="btn loading">Loading...</button>;
-  if (!isAuthorized) return <div>Not authorized</div>;
-
   const player = usePlayerStore((state) => state.player);
 
+  if (isLoading) return <button className="btn loading">Loading...</button>;
+  if (!isAuthorized) return <div>Not authorized</div>;
   if (!player) return <InputEmbedForPlayer />;
   return (
     <div>
@@ -69,7 +68,7 @@ const PedalContent: NextPage = () => {
           <DebugView {...{ isLoading, isAuthorized }} />
         </div>
       </div>
-        <div className="h-64" />
+      <div className="h-64" />
       <FAQs />
       <div className="h-60" />
     </Layout>

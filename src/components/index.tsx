@@ -37,7 +37,7 @@ const ChangeThemeComponent: React.FC = () => {
         className="select select-bordered font-bold w-full max-w-xs"
         onChange={(e) => setMode(e.target.value as ThemeMode)}
       >
-        <option disabled selected>
+        <option disabled value="" selected>
           Curent Theme: {mode}
         </option>
         {themeModes.map((item) => (
