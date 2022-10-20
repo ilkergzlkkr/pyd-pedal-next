@@ -63,7 +63,7 @@ const PedalContent: NextPage = () => {
 
   return (
     <Layout>
-      <div className="mr-72 ml-72 mockup-window border border-amber-600 bg-base-300">
+      <div>
         <div className="flex justify-center items-center text-white text-xl m-12 p-12">
           <DebugView {...{ isLoading, isAuthorized }} />
         </div>

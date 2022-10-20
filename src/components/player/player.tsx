@@ -1,14 +1,22 @@
-import { useEffect, useState, createRef } from "react";
+import { useEffect, useState } from "react";
 import { usePlayerStore } from "./store";
-import { useDownloadYTVideo, usePlayerCurrentTimeQuery } from "./utils";
+import { useDownloadYTVideo } from "./utils";
 
 export interface MusicPlayerProps {
   any?: any;
 }
 
 export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
-  const { player, downloading, toggle, setVolume, setSlowed, download, kill } =
-    usePlayerStore();
+  const {
+    player,
+    downloading,
+    currentTime,
+    toggle,
+    setVolume,
+    setSlowed,
+    download,
+    kill,
+  } = usePlayerStore();
 
   useEffect(() => {
     // player?.context.resume();
@@ -18,9 +26,9 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
     };
   }, [player]);
 
-  const { data: currentTime } = usePlayerCurrentTimeQuery();
   if (typeof window === "undefined") return null;
-  if (downloading) return <button className="btn loading">Downloading...</button>;
+  if (downloading)
+    return <button className="btn loading">Downloading...</button>;
   return (
     <>
       <div>
@@ -56,7 +64,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = () => {
           <span>|</span>
         </div>
         <ReverbMixer />
-        <div className="collapse text-info collapse-plus border border-base-300 bg-base-100 rounded-box">
+        <div className="mt-5 collapse text-info collapse-plus border border-secondary bg-base-100 rounded-box">
           <input type="checkbox" />
           <div className="collapse-title text-xs text-secondary-focus">
             Click me to show/hide debug content

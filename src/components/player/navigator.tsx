@@ -1,9 +1,7 @@
-import { usePlayerCurrentTimeQuery } from "./utils";
 import { usePlayerStore } from "./store";
 
 export const PlayerNavigator = () => {
-  const { player, toggle } = usePlayerStore();
-  const { data: currentTime } = usePlayerCurrentTimeQuery();
+  const { player, toggle, seekBy } = usePlayerStore();
   const humanDuration = () => {
     const time = player?.buffer.duration || 0;
     const minutes = Math.floor(time / 60);
@@ -13,22 +11,14 @@ export const PlayerNavigator = () => {
   return (
     <div className="flex w-[41rem] rounded-lg bg-white shadow-xl shadow-black/5 ring-1 ring-slate-700/10">
       <div className="flex items-center space-x-4 py-4 px-6">
-        {Left15}
+        <button onClick={() => seekBy(-15)}>{Left15}</button>
         <button
           className="transition-all duration-150 hover:bg-slate-900 hover:rounded-md ease-out"
           onClick={() => toggle()}
         >
           {Play}
         </button>
-        <button
-          onClick={() => {
-            if (player) {
-              player.start(undefined, 15);
-            }
-          }}
-        >
-          {Right15}
-        </button>
+        <button onClick={() => seekBy(+15)}>{Right15}</button>
       </div>
       <div className="flex flex-auto items-center border-l border-slate-200/60 pr-4 pl-6 text-[0.8125rem] leading-5 text-slate-700">
         {/* <div>00:51</div> */}

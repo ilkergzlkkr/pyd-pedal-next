@@ -1,23 +1,5 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { youtubeVideoRegex } from "../../utils/youtube";
-import { usePlayerStore } from "./store";
-
-export const usePlayerCurrentTimeQuery = () => {
-  const { player, currentTime, setCurrentTime } = usePlayerStore();
-  return useQuery(
-    ["player", "currentTime"],
-    () => {
-      if (!player) return 0;
-      if (player.state === "started") {
-        setCurrentTime(currentTime + 1);
-      }
-      return currentTime;
-    },
-    {
-      refetchInterval: 1000,
-    }
-  );
-};
 
 export const useDownloadYTVideo = () => {
   return useMutation(["player", "downloadYTVideo"], async (query: string) => {

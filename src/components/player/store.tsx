@@ -11,11 +11,23 @@ const defaults = {
   preDelay: 0.1,
 } as const;
 
+const createNewPlayerInterval = (get: () => PlayerStore) => {
+  const oldInterval = get().interval;
+  if (oldInterval) clearInterval(oldInterval);
+  return setInterval(() => {
+    const { player, currentTime, setCurrentTime } = get();
+    if (player && player.state === "started") {
+      setCurrentTime(currentTime + player.playbackRate);
+    }
+  }, 1000);
+};
+
 interface PlayerStore {
   defaults: typeof defaults;
   player?: Tone.Player;
   src?: string;
   reverb?: Tone.Reverb;
+  interval?: NodeJS.Timeout;
   downloading: boolean;
   currentTime: number;
   setSrc: (src: string) => void;
@@ -30,6 +42,7 @@ interface PlayerStore {
     wet?: any;
     preDelay?: any;
   }) => void;
+  seekBy: (seconds: number) => void;
   kill: () => void;
 }
 
@@ -46,10 +59,12 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
       new Tone.Player({
         playbackRate,
         volume,
-        loop: true,
+        // loop: true,
+        // when the sound is finished playing, currentTime still counts...
         onerror: console.error,
         onload: console.log,
       }).toDestination();
+    const interval = createNewPlayerInterval(get);
     reverb.debug = true;
     player.debug = true;
     player.connect(reverb);
@@ -57,7 +72,7 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     (globalThis as any).Tone = Tone;
     (globalThis as any).player = player;
     (globalThis as any).reverb = reverb;
-    set({ src, player, reverb, currentTime: 0 });
+    set({ src, player, reverb, interval, currentTime: 0 });
   },
   async toggle() {
     const player = get().player;
@@ -119,12 +134,25 @@ export const usePlayerStore = create<PlayerStore>()((set, get) => ({
     reverb.wet.value = parseFloat(wet) || reverb.wet.value;
     set({ reverb });
   },
+  seekBy(seconds) {
+    const { player, currentTime, setCurrentTime } = get();
+    if (player) {
+      let to = Math.max(currentTime + seconds, 0); //can't go into negative
+      to = Math.min(to, player.buffer.duration); //can't go longer than duration
+
+      player.start(undefined, to);
+      setCurrentTime(to);
+    }
+    set({ player });
+  },
   kill() {
     const player = get().player;
     const reverb = get().reverb;
+    const interval = get().interval;
+    if (interval) clearInterval(interval);
     if (!player || !reverb) return;
     player.dispose();
     reverb.dispose();
-    set({ player: undefined, reverb: undefined });
+    set({ player: undefined, reverb: undefined, interval: undefined });
   },
 }));
