@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import { useState, useEffect } from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
-import { ChevronDoubleRightIcon } from "@heroicons/react/outline";
 import { Layout } from "../components";
 
 import { trpc } from "../utils/trpc";
@@ -35,13 +34,13 @@ const DebugView: React.FC<DebugViewProps> = ({ isLoading, isAuthorized }) => {
 
 const PedalContent: NextPage = () => {
   const information =
-    "Remember, this is a closed-beta feature. There could be any bug or issue. Please report it to the developer.";
+    "Remember, this is a open-beta feature. There could be any bug or issue. Please report it to the developer.";
 
   const { newToast } = useToastStore();
   // const { player } = usePlayerStore();
   // show user the beta information once
   useEffect(() => {
-    newToast({ title: "Closed-Beta", body: information });
+    newToast({ title: "Open-Beta", body: information });
   }, [newToast]);
 
   // user input
@@ -71,131 +70,6 @@ const PedalContent: NextPage = () => {
       <div className="h-64" />
       <FAQs />
       <div className="h-60" />
-    </Layout>
-  );
-
-  return (
-    <Layout>
-      <div className="">
-        <div className="mx-auto max-w-2xl px-6 text-center">
-          <h1 className="tracking-tight font-extrabold text-white mt-5 text-5xl">
-            <span className="block">
-              {response?.state === "DONE"
-                ? "Serving"
-                : input.sent
-                ? "Baking"
-                : "Create"}{" "}
-              your Equalizer
-            </span>
-            <span className="block text-indigo-400">have fun listening</span>
-          </h1>
-          <div className="py-7"></div>
-          <>
-            {input.sent || (
-              <div className="font-extrabold">
-                <div className="mx-auto max-w-7xl ">
-                  <input
-                    className="container mb-8 py-1 p-5 border border-indigo-800 rounded-sm"
-                    placeholder="Youtube Link"
-                    onChange={(e) =>
-                      setInput({ ...input, query: e.target.value })
-                    }
-                  ></input>
-                  <div className="">
-                    {/* <SelectBoard selected={board} setSelected={setBoard} /> */}
-                  </div>
-                  <button
-                    className={`m-2 mt-4 px-5 py-3 text-6xl text-indigo-300 transition-colors duration-150 rounded-lg focus:shadow-outline ${
-                      input.query === ""
-                        ? "hover:bg-slate-900"
-                        : "hover:bg-indigo-900 hover:text-white"
-                    } `}
-                    type="submit"
-                    onClick={() => setInput({ ...input, sent: true })}
-                    disabled={input.query === ""}
-                  >
-                    Start Processing
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {input.sent && (
-              <div className="flex container text-white bg-black rounded-full p-6 mb-16 text-base">
-                <span
-                  className={`place-self-center p-6 text-white text-xs font-semibold leading-5 uppercase tracking-wide ${
-                    !response && "bg-indigo-500"
-                  } rounded-full`}
-                >
-                  Waiting for server response
-                </span>
-                <span
-                  className={`place-self-center p-6 ml-1 text-sm ${
-                    response?.state === "STARTED" && "bg-blue-600"
-                  } rounded-full tracking-wide`}
-                >
-                  Started
-                </span>
-                <span
-                  className={`place-self-center p-6 ml-1 text-sm group ${
-                    response?.state === "IN_PROGRESS" && "bg-yellow-600"
-                  } rounded-full tracking-wide`}
-                >
-                  In progress
-                  <div
-                    className={`${
-                      response?.state === "IN_PROGRESS" ? "block" : "hidden"
-                    } rounded-full tracking-wide`}
-                  >
-                    <p className="inline-flex tracking-wide">
-                      {response?.status?.stage}
-                    </p>
-                    <p className="inline-flex tracking-wide">
-                      {response?.status?.percentage}
-                    </p>
-                    {/* <BeakerIcon className="mx-6 text-slate-400" /> */}
-                  </div>
-                </span>
-                <span
-                  className={`place-self-center p-6 ml-1 text-sm ${
-                    response?.state === "DONE" && "bg-green-600"
-                  } rounded-full tracking-wide`}
-                >
-                  Done
-                </span>
-                <ChevronDoubleRightIcon
-                  className="place-self-center ml-2 w-5 h-5 text-gray-500"
-                  aria-hidden="true"
-                />
-              </div>
-            )}
-          </>
-          <div
-            className={`container mt-11 mb-11 text-6xl tracking-tight font-extrabold text-white ${
-              response?.result ? "" : "hidden"
-            }`}
-          >
-            <a
-              rel="noopener noreferrer"
-              href={response?.result || ""}
-              target="_blank"
-              className="flex justify-center p-2 text-indigo-300 transition-colors duration-150 rounded-lg focus:shadow-outline hover:bg-indigo-900 hover:text-white"
-            >
-              Preview or Download
-            </a>
-            {/* copy url button */}
-          </div>
-          <div className="text-gray-300 mt-5 mb-5 text-xl">
-            <p className="flex mb-5">
-              {/* {getBoardName(board)}: {getBoardDescription(board)} */}
-            </p>
-            <p>{information}</p>
-          </div>
-        </div>
-        <div className="h-64" />
-        <FAQs />
-        <div className="h-60" />
-      </div>
     </Layout>
   );
 };
