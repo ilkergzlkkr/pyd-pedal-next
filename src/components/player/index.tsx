@@ -1,11 +1,11 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { usePlayerStore } from "./store";
-import { MusicPlayer, InputEmbedForPlayer, MusicPlayerProps } from "./player";
+import { MusicPlayer, InputEmbedForPlayer } from "./player";
 import { PlayerNavigator } from "./navigator";
 import { useDownloadYTVideo } from "./utils";
 
-const LazyPlayer = dynamic<MusicPlayerProps>(
+const LazyPlayer = dynamic(
   () => import("./player").then((module) => module.MusicPlayer),
   {
     loading: () => <div>Loading...</div>,
