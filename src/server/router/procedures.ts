@@ -1,6 +1,8 @@
 import { TRPCError } from "@trpc/server";
 import { t } from "./context";
 
+export const publicProcedure = t.procedure;
+
 export const authenticatedProcedure = t.procedure.use(({ ctx, next }) => {
   if (!ctx.session?.user) {
     // in http: this will throw a 401 error when user is

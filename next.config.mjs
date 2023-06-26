@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { env } from "./src/env/server.mjs";
+// import { env } from "./src/env/server.mjs";
 
 /**
  * Don't be scared of the generics here.

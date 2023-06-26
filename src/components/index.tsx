@@ -8,7 +8,6 @@ import Link from "next/link";
 import Head from "next/head";
 import create from "zustand";
 
-import { Announcement } from "./modals";
 import { Toast } from "./toast";
 
 const navigation = [
@@ -17,7 +16,7 @@ const navigation = [
 ] as const;
 
 export const themeModes = ["retro", "dracula", "synthwave"] as const;
-export type ThemeMode = typeof themeModes[number];
+export type ThemeMode = (typeof themeModes)[number];
 
 interface Theme {
   mode: ThemeMode;
@@ -280,7 +279,6 @@ export const Layout: React.FC<{ children: JSX.Element | JSX.Element[] }> = ({
         />
         <meta name="theme-color" content="#ffffff" />
       </Head>
-      <Announcement />
       <Header navigation={navigation} />
       <Toast />
       <main>

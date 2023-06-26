@@ -1,9 +1,9 @@
 import { t } from "./context";
 
-import { authenticatedProcedure } from "./procedures";
+import { publicProcedure } from "./procedures";
 
 export const pypedalRouter = t.router({
-  isAuthorized: authenticatedProcedure.query(() => {
+  isAuthorized: publicProcedure.query(() => {
     return true;
   }),
 });

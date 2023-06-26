@@ -1,11 +1,10 @@
 import type React from "react";
 import type { NextPage } from "next";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { Layout } from "../components";
 
-import { trpc } from "../utils/trpc";
 import { useToastStore } from "../components/toast";
 import {
   InputEmbedForPlayer,
@@ -14,13 +13,9 @@ import {
   usePlayerStore,
 } from "../components/player";
 
-type DebugViewProps = { isLoading: boolean; isAuthorized?: boolean };
-
-const DebugView: React.FC<DebugViewProps> = ({ isLoading, isAuthorized }) => {
+const DebugView = () => {
   const player = usePlayerStore((state) => state.player);
 
-  if (isLoading) return <button className="btn loading">Loading...</button>;
-  if (!isAuthorized) return <div>Not authorized</div>;
   if (!player) return <InputEmbedForPlayer />;
   return (
     <div>
@@ -43,28 +38,11 @@ const PedalContent: NextPage = () => {
     newToast({ title: "Open-Beta", body: information });
   }, [newToast]);
 
-  // user input
-  const [input, setInput] = useState({ query: "", sent: false });
-
-  // backport for idk why
-  // TODO: delete
-  const response = {
-    state: "loading",
-    status: { stage: "processing", percentage: 100 },
-    result: null,
-  };
-
-  const { data: isAuthorized, isLoading } =
-    trpc.proxy.pypedal.isAuthorized.useQuery(undefined, {
-      refetchOnWindowFocus: false,
-      retry: false,
-    });
-
   return (
     <Layout>
       <div>
         <div className="flex justify-center items-center text-white text-xl m-12 p-12">
-          <DebugView {...{ isLoading, isAuthorized }} />
+          <DebugView />
         </div>
       </div>
       <div className="h-64" />
