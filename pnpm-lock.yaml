@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@headlessui/react':
     specifier: ^1.7.0
@@ -9,7 +13,7 @@ dependencies:
     version: 1.0.6(react@18.2.0)
   '@next-auth/prisma-adapter':
     specifier: ^1.0.4
-    version: 1.0.4(@prisma/client@4.2.1)(next-auth@4.10.3)
+    version: 1.0.4(@prisma/client@4.2.1)(next-auth@4.20.1)
   '@prisma/client':
     specifier: ^4.2.1
     version: 4.2.1(prisma@4.2.1)
@@ -53,8 +57,8 @@ dependencies:
     specifier: ^12.3.1
     version: 12.3.1(react-dom@18.2.0)(react@18.2.0)
   next-auth:
-    specifier: ^4.10.3
-    version: 4.10.3(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^4.20.1
+    version: 4.20.1(next@12.3.1)(react-dom@18.2.0)(react@18.2.0)
   node-fetch:
     specifier: ^2.6.7
     version: 2.6.7
@@ -260,14 +264,14 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@next-auth/prisma-adapter@1.0.4(@prisma/client@4.2.1)(next-auth@4.10.3):
+  /@next-auth/prisma-adapter@1.0.4(@prisma/client@4.2.1)(next-auth@4.20.1):
     resolution: {integrity: sha512-jIOM6CzCbl2/Mzbx9kb2IjtHoJOeRN9wtQgLk4EUm5bhneSVGv1rtz5TDskvp2UfCa+EK9nDmug+lje41z80Gg==}
     peerDependencies:
       '@prisma/client': '>=2.26.0 || >=3'
       next-auth: ^4
     dependencies:
       '@prisma/client': 4.2.1(prisma@4.2.1)
-      next-auth: 4.10.3(react-dom@18.2.0)(react@18.2.0)
+      next-auth: 4.20.1(next@12.3.1)(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
   /@next/env@12.3.1:
@@ -1263,8 +1267,8 @@ packages:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
 
-  /cookie@0.4.2:
-    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
+  /cookie@0.5.0:
+    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
     engines: {node: '>= 0.6'}
     dev: false
 
@@ -2536,10 +2540,10 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next-auth@4.10.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-7zc4aXYc/EEln7Pkcsn21V1IevaTZsMLJwapfbnKA4+JY0+jFzWbt5p/ljugesGIrN4VOZhpZIw50EaFZyghJQ==}
-    engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
+  /next-auth@4.20.1(next@12.3.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ZcTUN4qzzZ/zJYgOW0hMXccpheWtAol8QOMdMts+LYRcsPGsqf2hEityyaKyECQVw1cWInb9dF3wYwI5GZdEmQ==}
     peerDependencies:
+      next: ^12.2.5 || ^13
       nodemailer: ^6.6.5
       react: ^17.0.2 || ^18
       react-dom: ^17.0.2 || ^18
@@ -2549,8 +2553,9 @@ packages:
     dependencies:
       '@babel/runtime': 7.22.5
       '@panva/hkdf': 1.1.1
-      cookie: 0.4.2
+      cookie: 0.5.0
       jose: 4.14.4
+      next: 12.3.1(react-dom@18.2.0)(react@18.2.0)
       oauth: 0.9.15
       openid-client: 5.4.2
       preact: 10.15.1
