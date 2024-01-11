@@ -187,7 +187,7 @@ export const InputEmbedForPlayer = () => {
           />
           <button
             disabled={!url || !downloadYTVideo.isIdle}
-            className="btn btn-secondary"
+            className="btn btn-secondary w-12 sm:w-auto"
             onClick={async (e) => {
               e.preventDefault();
               console.log("downloadYTVideo", url);

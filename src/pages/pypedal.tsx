@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import { useEffect } from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
-import { Layout } from "../components";
+import { LayoutFree } from "../components";
 
 import { useToastStore } from "../components/toast";
 import {
@@ -39,16 +39,16 @@ const PedalContent: NextPage = () => {
   }, [newToast]);
 
   return (
-    <Layout>
+    <LayoutFree title="Music Equalizer">
       <div>
         <div className="flex justify-center items-center text-white text-xl m-12 p-12">
           <DebugView />
         </div>
       </div>
-      <div className="h-64" />
+      <div className="h-96" />
       <FAQs />
       <div className="h-60" />
-    </Layout>
+    </LayoutFree>
   );
 };
 
@@ -94,11 +94,11 @@ export const FAQs = () => {
     },
   ];
   return (
-    <div className="flex w-full px-4 pt-16">
+    <div className="flex items-center justify-center px-4 pt-16 gap-4 md:gap-16">
       <h1 className="tracking-tight font-extrabold text-white mt-5 text-5xl">
         Questions <span className="text-indigo-400">and</span> Answers
       </h1>
-      <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
+      <div className="max-w-md rounded-2xl bg-white p-2">
         {QnA.map((qna, idx) => (
           <Disclosure key={idx} as="div" className={`${idx > 0 ? "mt-2" : ""}`}>
             {({ open }) => (
